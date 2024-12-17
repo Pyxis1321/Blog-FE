@@ -1,0 +1,12 @@
+{
+	"files": {
+		"ignore": ["Api.ts"]
+	},
+	"linter": {
+		"rules": {
+			"complexity": {
+				"noBannedTypes": "off"
+			}
+		}
+	}
+}
