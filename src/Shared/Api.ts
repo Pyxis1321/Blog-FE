@@ -3,319 +3,301 @@
 // ALL CHANGES WILL BE OVERWRITTEN
 
 // INFRASTRUCTURE START
-export type StandardError = globalThis.Error;
-export type Error500s =
-  | 501
-  | 502
-  | 503
-  | 504
-  | 505
-  | 506
-  | 507
-  | 508
-  | 510
-  | 511;
-export type ErrorStatuses = 0 | Error500s;
-export type ErrorResponse = FetchResponse<unknown, ErrorStatuses>;
+  export type StandardError = globalThis.Error;
+  export type Error500s = 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511;
+  export type ErrorStatuses = 0 | Error500s;
+  export type ErrorResponse = FetchResponse<unknown, ErrorStatuses>;
 
-export type FetchResponseOfError = {
-  data: null;
-  error: StandardError;
-  status: ErrorStatuses;
-  args: any;
-};
-
-export type FetchResponseOfSuccess<TData, TStatus extends number = 0> = {
-  data: TData;
-  error: null;
-  status: TStatus;
-  args: any;
-  responseHeaders: Headers;
-};
-
-export type FetchResponse<
-  TData,
-  TStatus extends number = 0
-> = TStatus extends ErrorStatuses
-  ? FetchResponseOfError
-  : FetchResponseOfSuccess<TData, TStatus>;
-
-export type TerminateRequest = null;
-export type TerminateResponse = null;
-
-export type Configuration = {
-  apiUrl: string | (() => string);
-  jwtKey: string | undefined | (() => string | null | undefined);
-  requestMiddlewares?: Array<{
-    name: string;
-    fn: (request: FetchArgs) => FetchArgs | TerminateRequest;
-  }>;
-  responseMiddlewares?: Array<{
-    name: string;
-    fn: (
-      response: FetchResponse<unknown, any>
-    ) => FetchResponse<unknown, any> | TerminateResponse;
-  }>;
-};
-
-let CONFIG: Configuration = {
-  apiUrl: () => "",
-  jwtKey: undefined,
-  requestMiddlewares: [],
-  responseMiddlewares: [],
-};
-
-export function setupClient(configuration: Configuration) {
-  CONFIG = {
-    ...CONFIG,
-    ...configuration,
-    requestMiddlewares: [
-      ...(CONFIG.requestMiddlewares || []),
-      ...(configuration.requestMiddlewares || []),
-    ],
-    responseMiddlewares: [
-      ...(CONFIG.responseMiddlewares || []),
-      ...(configuration.responseMiddlewares || []),
-    ],
+  export type FetchResponseOfError = {
+    data: null;
+    error: StandardError;
+    status: ErrorStatuses;
+    args: any;
   };
-}
 
-export function getApiUrl() {
-  if (typeof CONFIG.apiUrl === "function") {
-    return CONFIG.apiUrl();
+  export type FetchResponseOfSuccess<TData, TStatus extends number = 0> = 
+  {
+    data: TData;
+    error: null;
+    status: TStatus;
+    args: any;
+    responseHeaders: Headers;
+  };
+
+  export type FetchResponse<TData, TStatus extends number = 0> = 
+    TStatus extends ErrorStatuses ? FetchResponseOfError: FetchResponseOfSuccess<TData, TStatus>;
+
+  export type TerminateRequest = null;
+  export type TerminateResponse = null;
+
+  export type Configuration = {
+    apiUrl: string | (() => string);
+    jwtKey: string | undefined | (() => string | null | undefined);
+    requestMiddlewares?: Array<{
+      name: string;
+      fn: (request: FetchArgs) => FetchArgs | TerminateRequest;
+    }>;
+    responseMiddlewares?: Array<{
+      name: string;
+      fn: (
+        response: FetchResponse<unknown, any>
+      ) => FetchResponse<unknown, any> | TerminateResponse;
+    }>;
+  };
+
+  let CONFIG: Configuration = {
+    apiUrl: () => "",
+    jwtKey: undefined,
+    requestMiddlewares: [],
+    responseMiddlewares: [],
+  };
+
+  export function setupClient(configuration: Configuration) {
+    CONFIG = {
+      ...CONFIG,
+      ...configuration,
+      requestMiddlewares: [
+        ...(CONFIG.requestMiddlewares || []),
+        ...(configuration.requestMiddlewares || []),
+      ],
+      responseMiddlewares: [
+        ...(CONFIG.responseMiddlewares || []),
+        ...(configuration.responseMiddlewares || []),
+      ],
+    };
   }
-  return CONFIG.apiUrl;
-}
 
-export type Termination = {
-  termination: {
-    name: string;
-  };
-};
-
-export function processRequestWithMiddlewares(
-  request: FetchArgs
-): FetchArgs | Termination {
-  for (const middleware of CONFIG.requestMiddlewares || []) {
-    try {
-      const middlewareResponse = middleware.fn(request);
-      if (middlewareResponse === null) {
-        return { termination: { name: middleware.name } };
-      }
-      request = middlewareResponse;
-    } catch (e) {
-      console.error("Request middleware error", e);
+  export function getApiUrl() {
+    if (typeof CONFIG.apiUrl === "function") {
+      return CONFIG.apiUrl();
     }
+    return CONFIG.apiUrl;
   }
-  return request;
-}
 
-export function processResponseWithMiddlewares<
-  T extends FetchResponse<unknown, any>
->(response: T): T | Termination {
-  for (const middleware of CONFIG.responseMiddlewares || []) {
-    try {
-      const middlewareResponse = middleware.fn(response);
-      if (middlewareResponse === null) {
-        return {
-          status: 0,
-          args: response.args,
-          data: null,
-          error: new Error(
-            `Response terminated by middleware: ${middleware.name}`
-          ),
-        } as FetchResponseOfError as unknown as T;
+  export type Termination = {
+    termination: {
+      name: string;
+    };
+  };
+
+  export function processRequestWithMiddlewares(
+    request: FetchArgs
+  ): FetchArgs | Termination {
+    for (const middleware of CONFIG.requestMiddlewares || []) {
+      try {
+        const middlewareResponse = middleware.fn(request);
+        if (middlewareResponse === null) {
+          return { termination: { name: middleware.name } };
+        }
+        request = middlewareResponse;
+      } catch (e) {
+        console.error("Request middleware error", e);
       }
-      response = middlewareResponse as T;
-    } catch (e) {
-      console.error("Response middleware error", e);
     }
+    return request;
   }
-  return response;
-}
 
-export type FetchOptions = {
-  method: string;
-  headers: Headers;
-  body?: any;
-  redirect: RequestRedirect;
-};
+  export function processResponseWithMiddlewares<T extends FetchResponse<unknown, any>>(
+    response: T
+  ): T | Termination {
+    for (const middleware of CONFIG.responseMiddlewares || []) {
+      try {
+        const middlewareResponse = middleware.fn(response);
+        if (middlewareResponse === null) {
+          return {
+            status: 0,
+            args: response.args,
+            data: null,
+            error: new Error(
+              `Response terminated by middleware: ${middleware.name}`
+            ),
+          } as FetchResponseOfError as unknown as T;
+        }
+        response = middlewareResponse as T;
+      } catch (e) {
+        console.error("Response middleware error", e);
+      }
+    }
+    return response;
+  }
 
-export type FetchArgs = {
-  url: string;
-  options: FetchOptions;
-};
-
-export async function fetchJson<T extends FetchResponse<unknown, number>>(
-  args: FetchArgs
-): Promise<T> {
-  const errorResponse = (error: StandardError, status: number, args: any) => {
-    const errorResponse = {
-      status: status as ErrorStatuses,
-      args,
-      data: null,
-      error,
-    } satisfies FetchResponse<T>;
-
-    return processResponseWithMiddlewares(errorResponse) as unknown as T;
+  export type FetchOptions = {
+    method: string;
+    headers: Headers;
+    body?: any;
+    redirect: RequestRedirect;
   };
 
-  const errorStatus = (args: any) => {
-    const errorResponse = {
-      status: 0,
-      args,
-      data: null,
-      error: new Error("Network error"),
-    } as FetchResponse<T, Error500s>;
+  export type FetchArgs = {
+    url: string;
+    options: FetchOptions;
+  }
 
-    return processResponseWithMiddlewares(errorResponse) as unknown as T;
-  };
+  export async function fetchJson<T extends FetchResponse<unknown, number>>(
+    args: FetchArgs
+  ): Promise<T> {
+    const errorResponse = (error: StandardError, status: number, args: any) => {
+      const errorResponse = {
+        status: status as ErrorStatuses,
+        args,
+        data: null,
+        error,
+      } satisfies FetchResponse<T>;
 
-  try {
-    const fetchRequest = processRequestWithMiddlewares(args);
+      return processResponseWithMiddlewares(errorResponse) as unknown as T;
+    };
 
-    if ("termination" in fetchRequest) {
-      const terminationResponse = {
+    const errorStatus = (args: any) => {
+      const errorResponse = {
         status: 0,
         args,
         data: null,
-        error: new Error(
-          `Request terminated by middleware: ${fetchRequest.termination.name}`
-        ),
+        error: new Error("Network error"),
       } as FetchResponse<T, Error500s>;
 
-      return processResponseWithMiddlewares(
-        terminationResponse
-      ) as unknown as T;
-    }
+      return processResponseWithMiddlewares(errorResponse) as unknown as T;
+    };
 
-    const fetchResponse: Response = await fetch(
-      fetchRequest.url,
-      fetchRequest.options
-    );
-    const status = fetchResponse.status;
     try {
-      const json = await fetchResponse.json();
-      const response = {
-        data: json,
-        status: fetchResponse.status,
-        args,
-        error: null,
-        responseHeaders: fetchResponse.headers,
-      };
-      return processResponseWithMiddlewares(response) as unknown as T;
-    } catch (error) {
-      return errorResponse(error as StandardError, status, args);
-    }
-  } catch {
-    return errorStatus(args);
-  }
-}
+      const fetchRequest = processRequestWithMiddlewares(args);
 
-export function getJwtKey(): string | null | undefined {
-  if (typeof CONFIG.jwtKey === "function") {
-    return CONFIG.jwtKey();
-  }
+      if ("termination" in fetchRequest) {
+        const terminationResponse = {
+          status: 0,
+          args,
+          data: null,
+          error: new Error(
+            `Request terminated by middleware: ${fetchRequest.termination.name}`
+          ),
+        } as FetchResponse<T, Error500s>;
 
-  if (typeof CONFIG.jwtKey === "string") {
-    return localStorage.getItem(CONFIG.jwtKey);
-  }
-
-  return undefined;
-}
-
-function getApiRequestData<Type extends any>(
-  requestContract: Type | undefined,
-  isFormData: boolean = false
-): FormData | Type | {} {
-  if (!isFormData) {
-    return requestContract !== undefined ? requestContract : {};
-  }
-
-  //multipart/form-data
-  const formData = new FormData();
-
-  if (requestContract) {
-    Object.keys(requestContract).forEach((key) => {
-      const value = requestContract[key as keyof Type];
-      const isKeyArrayAndValueIterable =
-        key.endsWith("[]") &&
-        typeof (value as any)[Symbol.iterator] === "function";
-      const values = isKeyArrayAndValueIterable
-        ? Array.from(value as Iterable<any>)
-        : [value];
-      for (const val of values) {
-        if (val === undefined) {
-          continue;
-        } else if (val === null) {
-          formData.append(key, "");
-        } else if (val instanceof File) {
-          formData.append(key, val);
-        } else if (typeof val === "object" && val !== null) {
-          formData.append(key, JSON.stringify(val));
-        } else {
-          formData.append(key, val as any);
-        }
+        return processResponseWithMiddlewares(
+          terminationResponse
+        ) as unknown as T;
       }
-    });
+
+      const fetchResponse: Response = await fetch(fetchRequest.url, fetchRequest.options);
+      const status = fetchResponse.status;
+      try {
+        const json = await fetchResponse.json();
+        const response = {
+          data: json,
+          status: fetchResponse.status,
+          args,
+          error: null,
+          responseHeaders: fetchResponse.headers,
+        };
+        return processResponseWithMiddlewares(response) as unknown as T;
+      } catch (error) {
+        return errorResponse(error as StandardError, status, args);
+      }
+    } catch {
+      return errorStatus(args);
+    }
   }
 
-  return formData;
-}
+  export function getJwtKey(): string | null | undefined {
+    if (typeof CONFIG.jwtKey === "function") {
+      return CONFIG.jwtKey();
+    }
 
-function updateHeadersAndGetBody<
-  TResponse extends FetchResponse<unknown, number>,
-  TRequest
->(request: TRequest, headers: Headers) {
-  updateHeaders(headers);
-  if (request instanceof FormData) {
-    headers.delete("Content-Type");
-    return request;
-  } else {
-    return JSON.stringify(request);
-  }
-}
+    if (typeof CONFIG.jwtKey === "string") {
+      return localStorage.getItem(CONFIG.jwtKey);
+    }
 
-function updateHeaders(headers: Headers) {
-  if (!headers.has("Content-Type")) {
-    headers.append("Content-Type", "application/json");
+    return undefined;
+  } 
+  
+  
+ function getApiRequestData<Type extends any>(
+    requestContract: Type | undefined,
+    isFormData: boolean = false
+  ): FormData | Type | {} {
+  
+    if (!isFormData) {
+      return requestContract !== undefined ? requestContract : {};
+    }
+  
+    //multipart/form-data
+    const formData = new FormData();
+  
+     if (requestContract) {
+      Object.keys(requestContract).forEach(key => {
+        const value = requestContract[key as keyof Type];
+        const isKeyArrayAndValueIterable = key.endsWith('[]') && typeof (value as any)[Symbol.iterator] === 'function';
+        const values = isKeyArrayAndValueIterable ? Array.from(value as Iterable<any>) : [value];
+          for (const val of values) {
+              if (val === undefined) {
+                  continue;
+              } else if (val === null) {
+                  formData.append(key, '');
+              } else if (val instanceof File) {
+                  formData.append(key, val);
+              } else if (typeof val === 'object' && val !== null) {
+                  formData.append(key, JSON.stringify(val));
+              } else {
+                  formData.append(key, val as any);
+              }
+          }
+      });
+    }
+  
+    return formData;
   }
-  const token = getJwtKey();
-  console.log("getJwtKey: ", token);
-  if (!headers.has("Authorization") && !!token) {
-    headers.append("Authorization", token);
+
+  
+  function updateHeadersAndGetBody<TResponse extends FetchResponse<unknown, number>, TRequest>(
+    request: TRequest,
+    headers: Headers
+  ) {
+    updateHeaders(headers);
+    if (request instanceof FormData) {
+      headers.delete("Content-Type");
+      return request;
+    } else {      
+      return JSON.stringify(request);
+    }
   }
-}
+  
+  function updateHeaders(headers: Headers) {
+    if (!headers.has("Content-Type")) {
+      headers.append("Content-Type", "application/json");
+    }
+    const token = getJwtKey();
+    if (!headers.has("Authorization") && !!token) {
+      headers.append("Authorization", token);
+    }
+  }
 
 export function getQueryParamsString(paramsObject: ParamsObject = {}) {
-  const queryString = Object.entries(paramsObject)
+	const queryString = Object.entries(paramsObject)
     .map(([key, value]) => {
       if (Array.isArray(value)) {
         return value
-          .map((val) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
-          .join("&");
+          .map(val => `${encodeURIComponent(key)}=${encodeURIComponent(
+            val,
+          )}`)
+          .join('&');
       }
       // Handling non-array parameters
-      return value !== undefined && value !== null
-        ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-        : "";
+      return value !== undefined && value !== null 
+        ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}` 
+        : '';
     })
-    .filter((part) => part !== "")
+    .filter(part => part !== '')
     .join("&");
 
-  return queryString.length > 0 ? `?${queryString}` : "";
+	return queryString.length > 0 ? `?${queryString}` : '';
 }
 
-export function apiPost<
-  TResponse extends FetchResponse<unknown, number>,
-  TRequest
->(
+export function apiPost<TResponse extends FetchResponse<unknown, number>, TRequest>(
   url: string,
   request: TRequest,
   headers: Headers,
   paramsObject: ParamsObject = {}
 ) {
-  const raw = updateHeadersAndGetBody(request, headers);
+  
+  const raw = updateHeadersAndGetBody(request, headers); 
 
   const requestOptions: FetchOptions = {
     method: "POST",
@@ -342,7 +324,7 @@ export function apiGet<TResponse extends FetchResponse<unknown, number>>(
   paramsObject: ParamsObject = {}
 ) {
   updateHeaders(headers);
-
+  
   const maybeQueryString = getQueryParamsString(paramsObject);
 
   const requestOptions: FetchOptions = {
@@ -357,10 +339,7 @@ export function apiGet<TResponse extends FetchResponse<unknown, number>>(
   });
 }
 
-export function apiPut<
-  TResponse extends FetchResponse<unknown, number>,
-  TRequest
->(
+export function apiPut<TResponse extends FetchResponse<unknown, number>, TRequest>(
   url: string,
   request: TRequest,
   headers: Headers,
@@ -396,7 +375,7 @@ export function apiDelete<TResponse extends FetchResponse<unknown, number>>(
     .filter(([_, val]) => val !== undefined && val !== null)
     .map(([key, val]) => `${key}=${val}`)
     .join("&");
-
+  
   const maybeQueryString = queryString.length > 0 ? `?${queryString}` : "";
 
   const requestOptions: FetchOptions = {
@@ -411,10 +390,7 @@ export function apiDelete<TResponse extends FetchResponse<unknown, number>>(
   });
 }
 
-export function apiPatch<
-  TResponse extends FetchResponse<unknown, number>,
-  TRequest
->(
+export function apiPatch<TResponse extends FetchResponse<unknown, number>, TRequest>(
   url: string,
   request: TRequest,
   headers: Headers,
@@ -439,129 +415,121 @@ export function apiPatch<
 }
 // INFRASTRUCTURE END
 
+export type CreatePostDTO = {
+	title?: string | null;
+	body?: string | null;
+	imageUrl?: string | null;
+};
+
 export type LoginDTO = {
-  token?: string | null;
-  expiration: string;
-  refreshToken?: string | null;
+	token?: string | null;
+	expiration: string;
+	refreshToken?: string | null;
 };
 
 export type LoginModel = {
-  username?: string | null;
-  password?: string | null;
+	username?: string | null;
+	password?: string | null;
 };
 
 export type PostDTO = {
-  id: number;
-  title?: string | null;
-  body?: string | null;
-  user: UserDTO;
-  createdAt: string;
+	id: number;
+	title?: string | null;
+	body?: string | null;
+	user: UserDTO;
+	createdAt: string;
+	imageUrl?: string | null;
 };
 
 export type RegisterModel = {
-  username?: string | null;
-  email?: string | null;
-  password?: string | null;
+	username?: string | null;
+	email?: string | null;
+	password?: string | null;
 };
 
 export type TokenModel = {
-  accessToken?: string | null;
-  refreshToken?: string | null;
+	accessToken?: string | null;
+	refreshToken?: string | null;
 };
 
 export type UserDTO = {
-  userName?: string | null;
-  email?: string | null;
-  phoneNumber?: string | null;
+	userName?: string | null;
+	email?: string | null;
+	phoneNumber?: string | null;
 };
 
-export type PostApiAuthRegisterFetchResponse =
-  | FetchResponse<void, 200>
-  | ErrorResponse;
+export type PostApiAuthRegisterFetchResponse = 
+| FetchResponse<void, 200> 
+| ErrorResponse;
 
 export const postApiAuthRegisterPath = () => `/api/Auth/Register`;
 
-export const postApiAuthRegister = (
-  requestContract: RegisterModel,
-  headers = new Headers()
-): Promise<PostApiAuthRegisterFetchResponse> => {
-  const requestData = getApiRequestData<RegisterModel>(requestContract, false);
+export const postApiAuthRegister = (requestContract: RegisterModel, headers = new Headers()):
+  Promise<PostApiAuthRegisterFetchResponse> => {
+    const requestData = getApiRequestData<RegisterModel>(requestContract, false);
 
-  return apiPost(
-    `${getApiUrl()}${postApiAuthRegisterPath()}`,
-    requestData,
-    headers
-  ) as Promise<PostApiAuthRegisterFetchResponse>;
-};
+    return apiPost(`${getApiUrl()}${postApiAuthRegisterPath()}`, requestData, headers) as Promise<PostApiAuthRegisterFetchResponse>;
+}
 
-export type PostApiAuthLoginFetchResponse =
-  | FetchResponse<LoginDTO, 200>
-  | ErrorResponse;
+export type PostApiAuthLoginFetchResponse = 
+| FetchResponse<LoginDTO, 200> 
+| ErrorResponse;
 
 export const postApiAuthLoginPath = () => `/api/Auth/Login`;
 
-export const postApiAuthLogin = (
-  requestContract: LoginModel,
-  headers = new Headers()
-): Promise<PostApiAuthLoginFetchResponse> => {
-  const requestData = getApiRequestData<LoginModel>(requestContract, false);
+export const postApiAuthLogin = (requestContract: LoginModel, headers = new Headers()):
+  Promise<PostApiAuthLoginFetchResponse> => {
+    const requestData = getApiRequestData<LoginModel>(requestContract, false);
 
-  return apiPost(
-    `${getApiUrl()}${postApiAuthLoginPath()}`,
-    requestData,
-    headers
-  ) as Promise<PostApiAuthLoginFetchResponse>;
-};
+    return apiPost(`${getApiUrl()}${postApiAuthLoginPath()}`, requestData, headers) as Promise<PostApiAuthLoginFetchResponse>;
+}
 
-export type PostApiAuthRefreshTokenFetchResponse =
-  | FetchResponse<LoginDTO, 200>
-  | ErrorResponse;
+export type PostApiAuthRefreshTokenFetchResponse = 
+| FetchResponse<LoginDTO, 200> 
+| ErrorResponse;
 
 export const postApiAuthRefreshTokenPath = () => `/api/Auth/RefreshToken`;
 
-export const postApiAuthRefreshToken = (
-  requestContract: TokenModel,
-  headers = new Headers()
-): Promise<PostApiAuthRefreshTokenFetchResponse> => {
-  const requestData = getApiRequestData<TokenModel>(requestContract, false);
+export const postApiAuthRefreshToken = (requestContract: TokenModel, headers = new Headers()):
+  Promise<PostApiAuthRefreshTokenFetchResponse> => {
+    const requestData = getApiRequestData<TokenModel>(requestContract, false);
 
-  return apiPost(
-    `${getApiUrl()}${postApiAuthRefreshTokenPath()}`,
-    requestData,
-    headers
-  ) as Promise<PostApiAuthRefreshTokenFetchResponse>;
-};
+    return apiPost(`${getApiUrl()}${postApiAuthRefreshTokenPath()}`, requestData, headers) as Promise<PostApiAuthRefreshTokenFetchResponse>;
+}
 
-export type PostApiAuthLogoutFetchResponse =
-  | FetchResponse<void, 200>
-  | ErrorResponse;
+export type PostApiAuthLogoutFetchResponse = 
+| FetchResponse<void, 200> 
+| ErrorResponse;
 
 export const postApiAuthLogoutPath = () => `/api/Auth/Logout`;
 
-export const postApiAuthLogout = (
-  headers = new Headers()
-): Promise<PostApiAuthLogoutFetchResponse> => {
-  const requestData = getApiRequestData<object>(undefined, false);
+export const postApiAuthLogout = (headers = new Headers()):
+  Promise<PostApiAuthLogoutFetchResponse> => {
+    const requestData = getApiRequestData<object>(undefined, false);
 
-  return apiPost(
-    `${getApiUrl()}${postApiAuthLogoutPath()}`,
-    requestData,
-    headers
-  ) as Promise<PostApiAuthLogoutFetchResponse>;
-};
+    return apiPost(`${getApiUrl()}${postApiAuthLogoutPath()}`, requestData, headers) as Promise<PostApiAuthLogoutFetchResponse>;
+}
 
-export type GetApiPostsFetchResponse =
-  | FetchResponse<PostDTO[], 200>
-  | ErrorResponse;
+export type GetApiPostsFetchResponse = 
+| FetchResponse<PostDTO[], 200> 
+| ErrorResponse;
 
 export const getApiPostsPath = () => `/api/Posts`;
 
-export const getApiPosts = (
-  headers = new Headers()
-): Promise<GetApiPostsFetchResponse> => {
-  return apiGet(
-    `${getApiUrl()}${getApiPostsPath()}`,
-    headers,
-    {}
-  ) as Promise<GetApiPostsFetchResponse>;
-};
+export const getApiPosts = (headers = new Headers()):
+  Promise<GetApiPostsFetchResponse> => {
+    return apiGet(`${getApiUrl()}${getApiPostsPath()}`, headers, {}) as Promise<GetApiPostsFetchResponse>;
+}
+
+export type PostApiPostsFetchResponse = 
+| FetchResponse<PostDTO, 200> 
+| ErrorResponse;
+
+export const postApiPostsPath = () => `/api/Posts`;
+
+export const postApiPosts = (requestContract: CreatePostDTO, headers = new Headers()):
+  Promise<PostApiPostsFetchResponse> => {
+    const requestData = getApiRequestData<CreatePostDTO>(requestContract, false);
+
+    return apiPost(`${getApiUrl()}${postApiPostsPath()}`, requestData, headers) as Promise<PostApiPostsFetchResponse>;
+}
