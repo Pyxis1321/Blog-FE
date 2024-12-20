@@ -12,7 +12,10 @@ export interface ResourceDictionary {
   };
   Post: {
     NewPost: {
+      postButton: string;
+      headerTitle: string;
       title: string;
+      image: string;
     };
   };
 }

@@ -14,7 +14,10 @@ export const TranslationResources: ResourceDictionary = {
   },
   Post: {
     NewPost: {
-      title: "Make a new post",
+      postButton: "Post",
+      headerTitle: "Make a new post",
+      title: "Title",
+      image: "Title image URL",
     },
   },
 };

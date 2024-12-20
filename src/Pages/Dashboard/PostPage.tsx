@@ -1,6 +1,7 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useFilterPostQuery } from "../../API/Dashboard/useFilterPostQuery";
+import parse from "html-react-parser";
 
 export const PostPage: React.FunctionComponent = (_) => {
 	const { id } = useParams<{ id: string }>();
@@ -8,7 +9,7 @@ export const PostPage: React.FunctionComponent = (_) => {
 
 	return (
 		<Stack>
-			<Typography>Post {id}</Typography>
+			{data?.body && parse(data.body)}
 		</Stack>
 	);
 };
