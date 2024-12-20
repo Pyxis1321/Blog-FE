@@ -8,7 +8,6 @@ import { getTheme } from "./Shared/Theme/theme";
 import ColorSchemeProvider from "./Shared/Theme/ColorSchemeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./Translations/i18n";
-import { TokenRefresher } from "./Pages/Auth/Compontnts/TokenRefresher";
 
 const queryClient = new QueryClient();
 

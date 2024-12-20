@@ -7,4 +7,12 @@ export interface ResourceDictionary {
       required: string;
     };
   };
+  Dashboard: {
+    addPost: string;
+  };
+  Post: {
+    NewPost: {
+      title: string;
+    };
+  };
 }

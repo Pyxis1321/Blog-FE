@@ -2,6 +2,7 @@ import {
 	Box,
 	Button,
 	CircularProgress,
+	Modal,
 	Stack,
 	Typography,
 	useTheme,
@@ -9,13 +10,31 @@ import {
 import { useDashboardAllPostsQuery } from "../../API/Dashboard/useDashboardAllPostsQuery";
 import { useAtomValue } from "jotai";
 import { sessionState } from "../../Shared/State/SessionAtom";
+import { useNavigate } from "react-router-dom";
+import { Routing } from "../../Shared/Routing/Routing";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { TranslationResources } from "../../Translations/EnglishTranslation";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { NewPostComponent } from "../Auth/Compontnts/NewPostComponent";
+
+const Translations = TranslationResources.Dashboard;
 
 export const Dashboard: React.FunctionComponent = (_) => {
+	const { t } = useTranslation();
 	const theme = useTheme();
+	const navigate = useNavigate();
+
+	const [modal, setModal] = useState(false);
+
 	const sessionAtom = useAtomValue(sessionState);
 	const { data, isFetching } = useDashboardAllPostsQuery({
 		enabled: sessionAtom.accessToken !== "",
 	});
+
+	const handleClick = (postId: number) => {
+		navigate(Routing.Post.path(postId));
+	};
 
 	return (
 		<Stack>
@@ -24,20 +43,25 @@ export const Dashboard: React.FunctionComponent = (_) => {
 					<CircularProgress />
 				</Stack>
 			)}
-			<Stack
-				width="70%"
-				pt={5}
-				gap={4}
-				px={5}
-				direction="row"
-				sx={{ cursor: "pointer" }}
-			>
+			{!isFetching && (
+				<Stack pt={5} pr={5} alignItems="end">
+					<Button
+						startIcon={<AddCircleOutlineIcon />}
+						onClick={() => setModal(true)}
+					>
+						{t(Translations.addPost)}
+					</Button>
+				</Stack>
+			)}
+			<Stack width="70%" pt={5} gap={4} px={5} direction="row">
 				{data?.map((post) => (
 					<Stack
 						key={post.id}
 						bgcolor={theme.palette.grey[50]}
 						borderRadius={2}
 						width={300}
+						sx={{ cursor: "pointer" }}
+						onClick={() => handleClick(post.id)}
 					>
 						<Box
 							component="img"
@@ -74,6 +98,9 @@ export const Dashboard: React.FunctionComponent = (_) => {
 					</Stack>
 				))}
 			</Stack>
+			<Modal open={modal} onClose={() => setModal(false)}>
+				<NewPostComponent />
+			</Modal>
 		</Stack>
 	);
 };

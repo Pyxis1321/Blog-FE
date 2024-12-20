@@ -1,7 +1,7 @@
 import { Button, Stack, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { TranslationResources } from "../../../Translations/CzechTranslation";
+import { TranslationResources } from "../../../Translations/EnglishTranslation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "../../../Shared/Components/Form/FormInput";

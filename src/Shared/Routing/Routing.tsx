@@ -10,4 +10,10 @@ export const Routing = {
 	Dashboard: {
 		path: () => `${baseUrl}/dashboard`,
 	},
+	Post: {
+		route: `${baseUrl}/post/:id`,
+		path: (id: number) => {
+			return `${baseUrl}/post/${id}`;
+		},
+	},
 };

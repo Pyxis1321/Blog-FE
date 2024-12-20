@@ -9,4 +9,12 @@ export const TranslationResources: ResourceDictionary = {
       required: "This field is required",
     },
   },
+  Dashboard: {
+    addPost: "Add post",
+  },
+  Post: {
+    NewPost: {
+      title: "Make a new post",
+    },
+  },
 };

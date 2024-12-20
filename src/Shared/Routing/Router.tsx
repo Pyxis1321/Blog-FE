@@ -4,6 +4,8 @@ import { LoginForm } from "../../Pages/Auth/Pages/LoginFormPage";
 import { RegisterForm } from "../../Pages/Auth/Pages/RegisterFormPage";
 import { SessionHandler } from "./SessionHandler";
 import { Routing } from "./Routing";
+import { getRoute } from "./Utils";
+import { PostPage } from "../../Pages/Dashboard/PostPage";
 
 export const router = createBrowserRouter([
 	{
@@ -23,6 +25,14 @@ export const router = createBrowserRouter([
 		element: (
 			<SessionHandler>
 				<Dashboard />
+			</SessionHandler>
+		),
+	},
+	{
+		path: getRoute(Routing.Post),
+		element: (
+			<SessionHandler>
+				<PostPage />
 			</SessionHandler>
 		),
 	},

@@ -533,3 +533,14 @@ export const postApiPosts = (requestContract: CreatePostDTO, headers = new Heade
 
     return apiPost(`${getApiUrl()}${postApiPostsPath()}`, requestData, headers) as Promise<PostApiPostsFetchResponse>;
 }
+
+export type GetApiPostsIdFetchResponse = 
+| FetchResponse<PostDTO, 200> 
+| ErrorResponse;
+
+export const getApiPostsIdPath = (id: number) => `/api/Posts/${id}`;
+
+export const getApiPostsId = (id: number, headers = new Headers()):
+  Promise<GetApiPostsIdFetchResponse> => {
+    return apiGet(`${getApiUrl()}${getApiPostsIdPath(id)}`, headers, {}) as Promise<GetApiPostsIdFetchResponse>;
+}
