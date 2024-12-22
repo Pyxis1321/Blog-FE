@@ -19,11 +19,11 @@ export function useLoginMutation() {
       postApiAuthLogin(requestContract)
     ),
     onSuccess: (data: LoginDTO) => {
-      console.log("sucess");
       setSessionState({
         accessToken: data.token ?? "",
         refreshToken: data.refreshToken ?? "1",
         authenticated: true,
+        isAdmin: data.isAdmin,
       });
       navigate(Routing.Dashboard.path());
       setupClient({

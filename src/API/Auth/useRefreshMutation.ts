@@ -24,7 +24,6 @@ export function useRefreshMutation() {
         accessToken: data.token ?? "",
         refreshToken: data.refreshToken ?? "",
       }));
-      console.log(data.token);
       const client: Configuration = {
         apiUrl: "https://localhost:7167",
         jwtKey: () => {
@@ -39,6 +38,7 @@ export function useRefreshMutation() {
         accessToken: "",
         refreshToken: "",
         authenticated: false,
+        isAdmin: false,
       });
     },
   });

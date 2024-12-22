@@ -38,7 +38,6 @@ export const RegisterForm: React.FunctionComponent = (_) => {
 	const { control, handleSubmit } = form;
 
 	const submit = (data: RegisterFormModel) => {
-		console.log("data: ", data);
 		mutate({
 			username: data.login,
 			email: data.email,

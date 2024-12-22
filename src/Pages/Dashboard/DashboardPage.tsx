@@ -17,8 +17,16 @@ import { TranslationResources } from "../../Translations/EnglishTranslation";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { NewPostComponent } from "../Auth/Compontnts/NewPostComponent";
+import { ConfirmationDialog } from "../../Shared/Components/ConfirmationDialog";
 
-const Translations = TranslationResources.Dashboard;
+const Translations = TranslationResources;
+
+export const sanitizeHtml = (html: string): string => {
+	if (!html) return "";
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(html, "text/html");
+	return doc.body.textContent || "";
+};
 
 export const Dashboard: React.FunctionComponent = (_) => {
 	const { t } = useTranslation();
@@ -26,14 +34,33 @@ export const Dashboard: React.FunctionComponent = (_) => {
 	const navigate = useNavigate();
 
 	const [modal, setModal] = useState(false);
+	const [dialog, setDialog] = useState(false);
+	const [dirty, setDirty] = useState(false);
 
 	const sessionAtom = useAtomValue(sessionState);
+
 	const { data, isFetching } = useDashboardAllPostsQuery({
-		enabled: sessionAtom.accessToken !== "",
+		enabled: !!sessionAtom.accessToken && sessionAtom.accessToken !== "",
 	});
 
 	const handleClick = (postId: number) => {
 		navigate(Routing.Post.path(postId));
+	};
+
+	const handleModalClose = () => {
+		if (dirty) {
+			setDialog(true);
+			return;
+		}
+		setModal(false);
+	};
+
+	const handleDialogClose = (confirmed: boolean) => {
+		if (confirmed) {
+			setDirty(false);
+			setModal(false);
+		}
+		setDialog(false);
 	};
 
 	return (
@@ -49,32 +76,35 @@ export const Dashboard: React.FunctionComponent = (_) => {
 						startIcon={<AddCircleOutlineIcon />}
 						onClick={() => setModal(true)}
 					>
-						{t(Translations.addPost)}
+						{t(Translations.Dashboard.addPost)}
 					</Button>
 				</Stack>
 			)}
-			<Stack width="70%" pt={5} gap={4} px={5} direction="row">
+			<Stack pt={5} gap={4} px={5} direction="row" flexWrap="wrap">
 				{data?.map((post) => (
 					<Stack
 						key={post.id}
 						bgcolor={theme.palette.grey[50]}
 						borderRadius={2}
-						width={300}
-						sx={{ cursor: "pointer" }}
+						width={200}
+						height={200}
+						sx={{ cursor: "pointer", flexShrink: 0, flexGrow: 0 }}
 						onClick={() => handleClick(post.id)}
 					>
-						<Box
-							component="img"
-							src={post.imageUrl ?? ""}
-							alt="default"
-							width="100%"
-							height="auto"
-							sx={{
-								objectFit: "cover",
-								borderTopLeftRadius: 8,
-								borderTopRightRadius: 8,
-							}}
-						/>
+						{post.imageUrl && (
+							<Box
+								component="img"
+								src={post.imageUrl ?? ""}
+								alt="default"
+								sx={{
+									width: "100%",
+									height: "120px",
+									objectFit: "contain",
+									borderTopLeftRadius: 8,
+									borderTopRightRadius: 8,
+								}}
+							/>
+						)}
 						<Stack p={1}>
 							<Typography variant="h2">{post.title}</Typography>
 							<Typography variant="subtitle1" color={theme.palette.grey[300]}>
@@ -91,16 +121,34 @@ export const Dashboard: React.FunctionComponent = (_) => {
 										WebkitBoxOrient: "vertical",
 									}}
 								>
-									{post.body}
+									{sanitizeHtml(post.body ?? "")}
 								</Typography>
 							</Stack>
 						</Stack>
 					</Stack>
 				))}
 			</Stack>
-			<Modal open={modal} onClose={() => setModal(false)}>
-				<NewPostComponent />
+			<Modal
+				open={modal}
+				onClose={handleModalClose}
+				sx={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
+				<Stack width="60%">
+					<NewPostComponent setDirty={setDirty} />
+				</Stack>
 			</Modal>
+			<ConfirmationDialog
+				open={dialog}
+				onClose={handleDialogClose}
+				title={t(Translations.Post.NewPost.dialogTitle)}
+				body={t(Translations.Post.NewPost.dialogBody)}
+				confirmButtonLabel={t(Translations.Post.NewPost.dialogConfirmButton)}
+				cancelButtonLabel={t(Translations.Post.NewPost.dialogCancelButton)}
+			/>
 		</Stack>
 	);
 };

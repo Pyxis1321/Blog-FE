@@ -18,6 +18,10 @@ export const TranslationResources: ResourceDictionary = {
       headerTitle: "Make a new post",
       title: "Title",
       image: "Title image URL",
+      dialogTitle: "Discard post?",
+      dialogBody: "Are you sure you want to discard this post?",
+      dialogConfirmButton: "Discard",
+      dialogCancelButton: "Cancel",
     },
   },
 };

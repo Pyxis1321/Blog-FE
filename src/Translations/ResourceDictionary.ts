@@ -16,6 +16,10 @@ export interface ResourceDictionary {
       headerTitle: string;
       title: string;
       image: string;
+      dialogTitle: string;
+      dialogBody: string;
+      dialogConfirmButton: string;
+      dialogCancelButton: string;
     };
   };
 }

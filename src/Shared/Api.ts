@@ -421,10 +421,18 @@ export type CreatePostDTO = {
 	imageUrl?: string | null;
 };
 
+export type EditPostDto = {
+	title?: string | null;
+	body?: string | null;
+	imageUrl?: string | null;
+	status: PostStatus;
+};
+
 export type LoginDTO = {
 	token?: string | null;
 	expiration: string;
 	refreshToken?: string | null;
+	isAdmin: boolean;
 };
 
 export type LoginModel = {
@@ -439,6 +447,13 @@ export type PostDTO = {
 	user: UserDTO;
 	createdAt: string;
 	imageUrl?: string | null;
+};
+
+export enum PostStatus {
+	Draft = "Draft",
+	Pending = "Pending",
+	Published = "Published",
+	Archived = "Archived"
 };
 
 export type RegisterModel = {
@@ -543,4 +558,17 @@ export const getApiPostsIdPath = (id: number) => `/api/Posts/${id}`;
 export const getApiPostsId = (id: number, headers = new Headers()):
   Promise<GetApiPostsIdFetchResponse> => {
     return apiGet(`${getApiUrl()}${getApiPostsIdPath(id)}`, headers, {}) as Promise<GetApiPostsIdFetchResponse>;
+}
+
+export type PutApiPostsIdFetchResponse = 
+| FetchResponse<void, 200> 
+| ErrorResponse;
+
+export const putApiPostsIdPath = (id: number) => `/api/Posts/${id}`;
+
+export const putApiPostsId = (requestContract: EditPostDto, id: number, headers = new Headers()):
+  Promise<PutApiPostsIdFetchResponse> => {
+    const requestData = getApiRequestData<EditPostDto>(requestContract, false);
+
+    return apiPut(`${getApiUrl()}${putApiPostsIdPath(id)}`, requestData, headers) as Promise<PutApiPostsIdFetchResponse>;
 }
