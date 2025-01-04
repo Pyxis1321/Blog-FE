@@ -415,6 +415,18 @@ export function apiPatch<TResponse extends FetchResponse<unknown, number>, TRequ
 }
 // INFRASTRUCTURE END
 
+export type CommentDTO = {
+	id: number;
+	body?: string | null;
+	createdAt: string;
+	user: UserDTO;
+};
+
+export type CreateCommentDTO = {
+	postId: number;
+	body: string;
+};
+
 export type CreatePostDTO = {
 	title?: string | null;
 	body?: string | null;
@@ -523,6 +535,30 @@ export const postApiAuthLogout = (headers = new Headers()):
     const requestData = getApiRequestData<object>(undefined, false);
 
     return apiPost(`${getApiUrl()}${postApiAuthLogoutPath()}`, requestData, headers) as Promise<PostApiAuthLogoutFetchResponse>;
+}
+
+export type PostApiCommentsFetchResponse = 
+| FetchResponse<CommentDTO, 200> 
+| ErrorResponse;
+
+export const postApiCommentsPath = () => `/api/Comments`;
+
+export const postApiComments = (requestContract: CreateCommentDTO, headers = new Headers()):
+  Promise<PostApiCommentsFetchResponse> => {
+    const requestData = getApiRequestData<CreateCommentDTO>(requestContract, false);
+
+    return apiPost(`${getApiUrl()}${postApiCommentsPath()}`, requestData, headers) as Promise<PostApiCommentsFetchResponse>;
+}
+
+export type GetApiCommentsPostPostIdFetchResponse = 
+| FetchResponse<CommentDTO[], 200> 
+| ErrorResponse;
+
+export const getApiCommentsPostPostIdPath = (postId: number) => `/api/Comments/post/${postId}`;
+
+export const getApiCommentsPostPostId = (postId: number, headers = new Headers()):
+  Promise<GetApiCommentsPostPostIdFetchResponse> => {
+    return apiGet(`${getApiUrl()}${getApiCommentsPostPostIdPath(postId)}`, headers, {}) as Promise<GetApiCommentsPostPostIdFetchResponse>;
 }
 
 export type GetApiPostsFetchResponse = 

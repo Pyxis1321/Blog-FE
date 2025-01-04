@@ -23,5 +23,10 @@ export const TranslationResources: ResourceDictionary = {
       dialogConfirmButton: "Discard",
       dialogCancelButton: "Cancel",
     },
+    Comments: {
+      title: "Comments",
+      postButton: "Post",
+      postNewComment: "Post a new comment",
+    },
   },
 };

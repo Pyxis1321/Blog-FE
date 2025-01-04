@@ -21,5 +21,10 @@ export interface ResourceDictionary {
       dialogConfirmButton: string;
       dialogCancelButton: string;
     };
+    Comments: {
+      title: string;
+      postNewComment: string;
+      postButton: string;
+    };
   };
 }

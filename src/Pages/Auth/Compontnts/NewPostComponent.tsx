@@ -78,7 +78,6 @@ export const NewPostComponent: FC<PropsWithChildren<Props>> = ({
 						</Stack>
 					</Stack>
 					<Divider sx={{ borderBottomWidth: 2 }} />
-
 					<FormInput
 						control={control}
 						name="title"
