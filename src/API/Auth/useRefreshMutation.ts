@@ -25,7 +25,7 @@ export function useRefreshMutation() {
         refreshToken: data.refreshToken ?? "",
       }));
       const client: Configuration = {
-        apiUrl: "https://localhost:7167",
+        apiUrl: import.meta.env.VITE_API_URL,
         jwtKey: () => {
           return `bearer ${data.token}`;
         },

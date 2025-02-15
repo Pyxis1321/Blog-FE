@@ -1,4 +1,4 @@
-import { Button, Stack, Typography, useTheme } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { TranslationResources } from "../../../Translations/EnglishTranslation";
@@ -12,7 +12,6 @@ import { setupClient } from "../../../Shared/Api";
 const PageResources = TranslationResources;
 
 export const RegisterForm: React.FunctionComponent = (_) => {
-	const theme = useTheme();
 	const { t } = useTranslation();
 
 	const { mutate } = useRegiterMutation();
@@ -46,7 +45,7 @@ export const RegisterForm: React.FunctionComponent = (_) => {
 	};
 
 	useEffect(() => {
-		setupClient({ apiUrl: "https://localhost:7167", jwtKey: "" });
+		setupClient({ apiUrl: import.meta.env.VITE_API_URL, jwtKey: "" });
 	});
 	return (
 		<Stack alignItems="center" justifyContent="center" height="100vh">

@@ -26,5 +26,17 @@ export interface ResourceDictionary {
       postNewComment: string;
       postButton: string;
     };
+    Post: {
+      deleteButton: string;
+    };
+    DeletePostDialog: {
+      title: string;
+    };
+  };
+  Components: {
+    Dialog: {
+      confirmButton: string;
+      cancelButton: string;
+    };
   };
 }

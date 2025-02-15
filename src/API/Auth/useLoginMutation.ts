@@ -27,7 +27,7 @@ export function useLoginMutation() {
       });
       navigate(Routing.Dashboard.path());
       setupClient({
-        apiUrl: "https://localhost:7167",
+        apiUrl: import.meta.env.VITE_API_URL,
         jwtKey: data.token ?? "",
       });
     },

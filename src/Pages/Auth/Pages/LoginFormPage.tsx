@@ -49,7 +49,7 @@ export const LoginForm: React.FunctionComponent = (_) => {
 	};
 
 	useEffect(() => {
-		setupClient({ apiUrl: "https://localhost:7167", jwtKey: "" });
+		setupClient({ apiUrl: import.meta.env.VITE_API_URL, jwtKey: "" });
 	});
 	return (
 		<Stack alignItems="center" justifyContent="center" height="100vh">

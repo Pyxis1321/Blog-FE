@@ -8,8 +8,6 @@ import {
 	useTheme,
 } from "@mui/material";
 import { useDashboardAllPostsQuery } from "../../API/Dashboard/useDashboardAllPostsQuery";
-import { useAtomValue } from "jotai";
-import { sessionState } from "../../Shared/State/SessionAtom";
 import { useNavigate } from "react-router-dom";
 import { Routing } from "../../Shared/Routing/Routing";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -37,11 +35,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 	const [dialog, setDialog] = useState(false);
 	const [dirty, setDirty] = useState(false);
 
-	const sessionAtom = useAtomValue(sessionState);
-
-	const { data, isFetching } = useDashboardAllPostsQuery({
-		enabled: !!sessionAtom.accessToken && sessionAtom.accessToken !== "",
-	});
+	const { data, isFetching } = useDashboardAllPostsQuery();
 
 	const handleClick = (postId: number) => {
 		navigate(Routing.Post.path(postId));

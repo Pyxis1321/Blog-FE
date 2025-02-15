@@ -28,5 +28,17 @@ export const TranslationResources: ResourceDictionary = {
       postButton: "Post",
       postNewComment: "Post a new comment",
     },
+    Post: {
+      deleteButton: "Delete post",
+    },
+    DeletePostDialog: {
+      title: "Delete post?",
+    },
+  },
+  Components: {
+    Dialog: {
+      confirmButton: "Confirm",
+      cancelButton: "Cancel",
+    },
   },
 };
