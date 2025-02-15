@@ -13,15 +13,17 @@ export const TranslationResources: ResourceDictionary = {
     addPost: "Add post",
   },
   Post: {
-    NewPost: {
+    PostForm: {
       postButton: "Post",
       headerTitle: "Make a new post",
+      headerTitleEdit: "Edit post",
       title: "Title",
       image: "Title image URL",
       dialogTitle: "Discard post?",
       dialogBody: "Are you sure you want to discard this post?",
       dialogConfirmButton: "Discard",
       dialogCancelButton: "Cancel",
+      saveError: "Failed to save post, please try again later",
     },
     Comments: {
       title: "Comments",
@@ -30,6 +32,7 @@ export const TranslationResources: ResourceDictionary = {
     },
     Post: {
       deleteButton: "Delete post",
+      editButton: "Edit post",
     },
     DeletePostDialog: {
       title: "Delete post?",

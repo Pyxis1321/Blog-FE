@@ -8,21 +8,38 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from "../../../Shared/Components/Form/FormInput";
 import { FormQuillInput } from "../../../Shared/Components/Form/FormTextEdit";
 import { useUploadPostMutation } from "../../../API/Dashboard/mutations/useUploadPostMutation";
-import type { CreatePostDTO } from "../../../Shared/Api";
+import {
+	PostStatus,
+	type CreatePostDTO,
+	type EditPostDto,
+	type PostDTO,
+} from "../../../Shared/Api";
 import type { FC, PropsWithChildren } from "react";
+import { useEditPostMutation } from "../../../API/Dashboard/mutations/useEditPostMutation";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { dashboardKeys } from "../../../API/Dashboard/keys";
 
 const Translations = TranslationResources;
 
 export type Props = {
-	setDirty: (dirty: boolean) => void;
+	id?: number;
+	post?: PostDTO;
+	setDirty?: (dirty: boolean) => void;
+	setDialogOpen?: (open: boolean) => void;
 };
 
-export const NewPostComponent: FC<PropsWithChildren<Props>> = ({
+export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
+	id,
+	post,
 	setDirty,
+	setDialogOpen,
 }) => {
 	const { t } = useTranslation();
+	const queryClient = useQueryClient();
 
-	const { mutate } = useUploadPostMutation();
+	const { mutate: createPost } = useUploadPostMutation();
+	const { mutate: editPost } = useEditPostMutation();
 
 	const PostFormModelSchema = z.object({
 		title: z.string({
@@ -41,9 +58,9 @@ export const NewPostComponent: FC<PropsWithChildren<Props>> = ({
 	const form = useForm<PostFormModel>({
 		resolver: zodResolver(PostFormModelSchema),
 		defaultValues: {
-			title: "",
-			body: "",
-			imageUrl: "",
+			title: post?.title ?? "",
+			body: post?.body ?? "",
+			imageUrl: post?.imageUrl ?? "",
 		},
 	});
 
@@ -53,10 +70,44 @@ export const NewPostComponent: FC<PropsWithChildren<Props>> = ({
 		formState: { isDirty },
 	} = form;
 
-	setDirty(isDirty);
+	setDirty?.(isDirty);
+
+	const closeDialog = (showError = false) => {
+		setDialogOpen?.(false);
+		if (showError) {
+			toast.error(t(Translations.Post.PostForm.saveError));
+		}
+	};
 
 	const submit = (data: CreatePostDTO) => {
-		mutate(data);
+		if (!id) {
+			createPost(data, {
+				onSuccess: () => closeDialog(),
+				onError: () => closeDialog(true),
+			});
+			return;
+		}
+
+		const post: EditPostDto = {
+			title: data.title,
+			body: data.body,
+			imageUrl: data.imageUrl,
+			status: PostStatus.Published,
+		};
+
+		editPost(
+			{ post, id },
+			{
+				onSuccess: () => {
+					closeDialog();
+					queryClient.invalidateQueries({
+						queryKey: dashboardKeys.filterPosts(id),
+					});
+				},
+
+				onError: () => closeDialog(true),
+			},
+		);
 	};
 
 	return (
@@ -69,11 +120,13 @@ export const NewPostComponent: FC<PropsWithChildren<Props>> = ({
 						alignItems="center"
 					>
 						<Typography variant="h2">
-							{t(Translations.Post.NewPost.headerTitle)}
+							{id
+								? t(Translations.Post.PostForm.headerTitleEdit)
+								: t(Translations.Post.PostForm.headerTitle)}
 						</Typography>
 						<Stack alignItems="end" justifyContent="end">
 							<Button type="submit" color="primary" variant="contained">
-								{t("Post.NewPost.postButton")}
+								{t("Post.PostForm.postButton")}
 							</Button>
 						</Stack>
 					</Stack>
@@ -81,12 +134,12 @@ export const NewPostComponent: FC<PropsWithChildren<Props>> = ({
 					<FormInput
 						control={control}
 						name="title"
-						label={t(Translations.Post.NewPost.title)}
+						label={t(Translations.Post.PostForm.title)}
 					/>
 					<FormInput
 						control={control}
 						name="imageUrl"
-						label={t(Translations.Post.NewPost.image)}
+						label={t(Translations.Post.PostForm.image)}
 					/>
 					<FormQuillInput control={control} name="body" />
 				</Stack>

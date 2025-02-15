@@ -64,7 +64,7 @@ export const CommentComponent: FC<PropsWithChildren<Props>> = ({ postId }) => {
 						<FormInput control={control} name="body" />
 						<Stack width="10%">
 							<Button type="submit" color="primary" variant="contained">
-								{t("Post.NewPost.postButton")}
+								{t("Post.PostForm.postButton")}
 							</Button>
 						</Stack>
 					</Stack>
@@ -73,7 +73,7 @@ export const CommentComponent: FC<PropsWithChildren<Props>> = ({ postId }) => {
 					{comments?.map((comment) => (
 						<Stack key={comment.id} gap={1}>
 							<Stack>
-								<Typography variant="h3">{comment.user.userName}</Typography>
+								<Typography variant="h3">{comment.user.username}</Typography>
 								<Typography variant="subtitle2">
 									{comment.user.email}
 								</Typography>

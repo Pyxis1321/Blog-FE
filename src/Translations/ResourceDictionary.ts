@@ -11,15 +11,17 @@ export interface ResourceDictionary {
     addPost: string;
   };
   Post: {
-    NewPost: {
+    PostForm: {
       postButton: string;
       headerTitle: string;
+      headerTitleEdit: string;
       title: string;
       image: string;
       dialogTitle: string;
       dialogBody: string;
       dialogConfirmButton: string;
       dialogCancelButton: string;
+      saveError: string;
     };
     Comments: {
       title: string;
@@ -28,6 +30,7 @@ export interface ResourceDictionary {
     };
     Post: {
       deleteButton: string;
+      editButton: string;
     };
     DeletePostDialog: {
       title: string;

@@ -447,9 +447,11 @@ export type TokenModel = {
 };
 
 export type UserDTO = {
-	userName?: string | null;
+	id?: string | null;
+	username?: string | null;
 	email?: string | null;
 	phoneNumber?: string | null;
+	roles?: string[] | null;
 };
 
 export type PostApiAuthRegisterFetchResponse = 
@@ -585,4 +587,15 @@ export const putApiPostsId = (requestContract: EditPostDto, id: number, options?
     const requestData = getApiRequestData<EditPostDto>(requestContract, false);
 
     return apiPut(`${getApiUrl()}${putApiPostsIdPath(id)}`, requestData, options) as Promise<PutApiPostsIdFetchResponse>;
+}
+
+export type GetApiUserProfileFetchResponse = 
+| FetchResponse<UserDTO, 200> 
+| ErrorResponse;
+
+export const getApiUserProfilePath = () => `/api/User/Profile`;
+
+export const getApiUserProfile = (options?: FetchArgsOptions):
+  Promise<GetApiUserProfileFetchResponse> => {
+    return apiGet(`${getApiUrl()}${getApiUserProfilePath()}`, options, {}) as Promise<GetApiUserProfileFetchResponse>;
 }

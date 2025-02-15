@@ -14,7 +14,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { TranslationResources } from "../../Translations/EnglishTranslation";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { NewPostComponent } from "../Auth/Compontnts/NewPostComponent";
+import { PostFormComponent } from "../Auth/Components/PostFormComponent";
 import { ConfirmationDialog } from "../../Shared/Components/ConfirmationDialog";
 
 const Translations = TranslationResources;
@@ -102,7 +102,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 						<Stack p={1}>
 							<Typography variant="h2">{post.title}</Typography>
 							<Typography variant="subtitle1" color={theme.palette.grey[300]}>
-								{post.user.userName}
+								{post.user.username}
 							</Typography>
 							<Stack>
 								<Typography
@@ -132,16 +132,16 @@ export const Dashboard: React.FunctionComponent = (_) => {
 				}}
 			>
 				<Stack width="60%">
-					<NewPostComponent setDirty={setDirty} />
+					<PostFormComponent setDirty={setDirty} />
 				</Stack>
 			</Modal>
 			<ConfirmationDialog
 				open={dialog}
 				onClose={handleDialogClose}
-				title={t(Translations.Post.NewPost.dialogTitle)}
-				body={t(Translations.Post.NewPost.dialogBody)}
-				confirmButtonLabel={t(Translations.Post.NewPost.dialogConfirmButton)}
-				cancelButtonLabel={t(Translations.Post.NewPost.dialogCancelButton)}
+				title={t(Translations.Post.PostForm.dialogTitle)}
+				body={t(Translations.Post.PostForm.dialogBody)}
+				confirmButtonLabel={t(Translations.Post.PostForm.dialogConfirmButton)}
+				cancelButtonLabel={t(Translations.Post.PostForm.dialogCancelButton)}
 			/>
 		</Stack>
 	);
