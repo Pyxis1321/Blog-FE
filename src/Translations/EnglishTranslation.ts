@@ -10,7 +10,23 @@ export const TranslationResources: ResourceDictionary = {
     },
   },
   Dashboard: {
+    Tabs: {
+      Home: {
+        tab: "Home",
+        title: "Welcome to the dashboard",
+      },
+      Settings: {
+        title: "Settings",
+        Component: {
+          title: "Account Settings",
+          subtitle: "Manage your account settings and preferences.",
+          content: "More settings options will be added here.",
+          logout: "Logout",
+        },
+      },
+    },
     addPost: "Add post",
+    placeholder: "Search posts...",
   },
   Post: {
     PostForm: {

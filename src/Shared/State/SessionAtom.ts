@@ -7,7 +7,7 @@ export type SessionState = {
   isAdmin: boolean;
 };
 
-const defaultState: SessionState = {
+export const defaultSessionState: SessionState = {
   authenticated: false,
   accessToken: "",
   refreshToken: "",
@@ -16,5 +16,5 @@ const defaultState: SessionState = {
 
 export const sessionState = atomWithStorage<SessionState>(
   "SESSION_STATE",
-  defaultState
+  defaultSessionState
 );

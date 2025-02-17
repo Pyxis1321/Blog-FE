@@ -1,10 +1,10 @@
 import type { SimplePaletteColorOptions } from "@mui/material";
 export const Colors = {
-  Primary: "#00C0AA",
-  Primary75: "#52D4C5",
-  Primary50: "#7ADED3",
-  Primary25: "#A3E8E0",
-  Primary10: "#CCF2EE",
+  Primary: "#c20870",
+  Primary75: "#D6579E",
+  Primary50: "#DF7FB5",
+  Primary25: "#E9A6CC",
+  Primary10: "#F3CEE2",
 
   Secondary: "#009CEA",
   Secondary75: "#52BCF1",
@@ -28,14 +28,14 @@ export const Colors = {
   Danger25: "#F4ADBD",
 
   MonoChrome50: "#F8FAFC",
-  MonoChrome100: "#F1F5F9",
-  MonoChrome200: "#E2E8F0",
-  MonoChrome300: "#CBD5E1",
-  MonoChrome400: "#94A3B8",
-  MonoChrome500: "#64748B",
-  MonoChrome600: "#475569",
-  MonoChrome700: "#334155",
-  MonoChrome800: "#1E293B",
+  MonoChrome100: "#DADCDE",
+  MonoChrome200: "#BCBEC0",
+  MonoChrome300: "#9EA0A2",
+  MonoChrome400: "#818284",
+  MonoChrome500: "#636365",
+  MonoChrome600: "#454547",
+  MonoChrome700: "#272729",
+  MonoChrome800: "#09090B",
 
   White: "#FFFFFF",
 
@@ -98,11 +98,11 @@ export const Colors = {
 } as const;
 
 export const DarkModeColors = {
-  Primary: "#00C0AA",
-  Primary75: "#52D4C5",
-  Primary50: "#7ADED3",
-  Primary25: "#A3E8E0",
-  Primary10: "#CCF2EE",
+  Primary: "#c20870",
+  Primary75: "#D6579E",
+  Primary50: "#DF7FB5",
+  Primary25: "#E9A6CC",
+  Primary10: "#F3CEE2",
 
   Secondary: "#009CEA",
   Secondary75: "#52BCF1",
@@ -125,14 +125,14 @@ export const DarkModeColors = {
   Danger50: "#EF88A0",
   Danger25: "#F4ADBD",
 
-  MonoChrome50: "#1E293B",
-  MonoChrome100: "#334155",
-  MonoChrome200: "#475569",
-  MonoChrome300: "#64748B",
-  MonoChrome400: "#94A3B8",
-  MonoChrome500: "#CBD5E1",
-  MonoChrome600: "#E2E8F0",
-  MonoChrome700: "#F1F5F9",
+  MonoChrome50: "#09090B",
+  MonoChrome100: "#272729",
+  MonoChrome200: "#454547",
+  MonoChrome300: "#636365",
+  MonoChrome400: "#818284",
+  MonoChrome500: "#9EA0A2",
+  MonoChrome600: "#BCBEC0",
+  MonoChrome700: "#DADCDE",
   MonoChrome800: "#F8FAFC",
 
   White: "#0F172A",

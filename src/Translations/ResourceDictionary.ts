@@ -8,7 +8,23 @@ export interface ResourceDictionary {
     };
   };
   Dashboard: {
+    Tabs: {
+      Home: {
+        tab: string;
+        title: string;
+      };
+      Settings: {
+        title: string;
+        Component: {
+          title: string;
+          subtitle: string;
+          content: string;
+          logout: string;
+        };
+      };
+    };
     addPost: string;
+    placeholder: string;
   };
   Post: {
     PostForm: {
