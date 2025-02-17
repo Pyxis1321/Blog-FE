@@ -2,11 +2,31 @@ import type { ResourceDictionary } from "./ResourceDictionary";
 
 export const TranslationResources: ResourceDictionary = {
   Auth: {
+    website: "Catalyst",
+    loginTitle: "Log in to your account",
+    registerTitle: "Create your account",
     username: "Username",
+    email: "Email",
     password: "Password",
-    registration: "Register new account",
+    confirmPassword: "Confirm password",
+    registrationQuestion: "Don't have an account?",
+    loginQuestion: "Already have an account?",
+    registrationText: "Register here",
+    loginText: "Log in here",
+    login: "Log in",
+    register: "Register",
     Form: {
       required: "This field is required",
+      Validation: {
+        passwordsNotMatching: "Passwords do not match",
+        PasswordRules: {
+          passwordMinLength: "Password must be at least 6 characters long",
+          passwordDigit: "Password must contain a digit",
+          passwordLowercase: "Password must contain a lowercase letter",
+          passwordUppercase: "Password must contain an uppercase letter",
+          passwordSpecialCharacter: "Password must contain a special character",
+        },
+      },
     },
   },
   Dashboard: {
@@ -47,11 +67,12 @@ export const TranslationResources: ResourceDictionary = {
       postNewComment: "Post a new comment",
     },
     Post: {
-      deleteButton: "Delete post",
-      editButton: "Edit post",
+      deleteButton: "Delete",
+      editButton: "Edit",
     },
     DeletePostDialog: {
-      title: "Delete post?",
+      title: "Delete post",
+      content: "Are you sure you want to delete this post?",
     },
   },
   Components: {

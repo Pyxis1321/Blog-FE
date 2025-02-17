@@ -1,4 +1,4 @@
-import { Button, Stack, Typography, useTheme } from "@mui/material";
+import { Button, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { TranslationResources } from "../../../Translations/EnglishTranslation";
@@ -12,6 +12,10 @@ import { useEffect } from "react";
 import { setupClient } from "../../../Shared/Api";
 import { useAtomValue } from "jotai";
 import { sessionState } from "../../../Shared/State/SessionAtom";
+import { Logo } from "../../../Shared/SVGs/Logo";
+import { useColorScheme } from "../../../Shared/Theme/ColorSchemeProvider";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 const PageResources = TranslationResources;
 
@@ -20,6 +24,7 @@ export const LoginForm: React.FunctionComponent = (_) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const sessionAtom = useAtomValue(sessionState);
+	const { mode, setMode } = useColorScheme();
 
 	const { mutate } = useLoginMutation();
 
@@ -52,31 +57,93 @@ export const LoginForm: React.FunctionComponent = (_) => {
 		setupClient({ apiUrl: import.meta.env.VITE_API_URL, jwtKey: "" });
 	});
 	return (
-		<Stack alignItems="center" justifyContent="center" height="100vh">
-			<form onSubmit={handleSubmit(submit)}>
-				<Stack gap={2}>
-					<FormInput
-						control={control}
-						name="login"
-						label={t(PageResources.Auth.username)}
-					/>
-					<FormInput
-						control={control}
-						name="password"
-						type="password"
-						label={t(PageResources.Auth.password)}
-					/>
+		<Stack
+			alignItems="center"
+			justifyContent="center"
+			height="100vh"
+			width="100%"
+		>
+			<Stack
+				gap={3}
+				bgcolor={(t) => t.palette.grey[50]}
+				width="500px"
+				p={3}
+				borderRadius={3}
+				alignItems="stretch"
+			>
+				<Stack alignItems="center">
+					<Logo color={theme.palette.primary.main} />
+					<Typography variant="h1">{t(PageResources.Auth.website)}</Typography>
+				</Stack>
+
+				<Stack alignItems="center">
+					<Typography variant="h5">
+						{t(PageResources.Auth.loginTitle)}
+					</Typography>
+				</Stack>
+				<form onSubmit={handleSubmit(submit)}>
+					<Stack>
+						<FormInput
+							control={control}
+							name="login"
+							placeholder={t(PageResources.Auth.username)}
+							fullWidth
+							sx={{
+								"& .MuiOutlinedInput-notchedOutline": {
+									borderRadius: "4px 4px 0 0",
+								},
+							}}
+						/>
+						<FormInput
+							control={control}
+							name="password"
+							type="password"
+							placeholder={t(PageResources.Auth.password)}
+							fullWidth
+							sx={{
+								"& .MuiOutlinedInput-notchedOutline": {
+									borderRadius: "0 0 4px 4px",
+								},
+							}}
+						/>
+
+						<Stack pt={3}>
+							<Button
+								type="submit"
+								fullWidth
+								color="primary"
+								variant="contained"
+							>
+								{t(PageResources.Auth.login)}
+							</Button>
+						</Stack>
+					</Stack>
+				</form>
+				<Stack justifyContent={"center"} direction="row" gap={0.3}>
+					<Typography variant="body1" color={theme.palette.grey[500]}>
+						{t(PageResources.Auth.registrationQuestion)}
+					</Typography>
 					<Typography
-						color={theme.palette.primary.main}
+						variant="body1"
+						style={{ color: theme.palette.primary.main, cursor: "pointer" }}
 						onClick={() => navigate(Routing.Register.path())}
 					>
-						{t(PageResources.Auth.registration)}
+						{t(PageResources.Auth.registrationText)}
 					</Typography>
-					<Button type="submit" fullWidth color="primary" variant="contained">
-						Submit
-					</Button>
 				</Stack>
-			</form>
+			</Stack>
+
+			<Stack position="absolute" top={20} right={20}>
+				<IconButton
+					sx={{
+						border: (t) => `1px solid ${t.palette.grey[100]}`,
+						borderRadius: 2,
+					}}
+					onClick={() => setMode(mode === "dark" ? "light" : "dark")}
+				>
+					{mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+				</IconButton>
+			</Stack>
 		</Stack>
 	);
 };

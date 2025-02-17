@@ -1,7 +1,7 @@
 import { IconButton, Stack, Typography } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { useColorScheme } from "../../../Shared/Theme/ColorSchemeProvider";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { useColorScheme } from "../../../Shared/Theme/ColorSchemeProvider";
 
 type Props = {
 	title: string;

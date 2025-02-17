@@ -1,4 +1,4 @@
-import { Button, Divider, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography, useTheme } from "@mui/material";
 import { TranslationResources } from "../../../Translations/EnglishTranslation";
 import { useTranslation } from "react-i18next";
 import "react-quill/dist/quill.snow.css";
@@ -10,6 +10,7 @@ import type { CreateCommentDTO } from "../../../Shared/Api";
 import type { FC, PropsWithChildren } from "react";
 import { useUploadCommentMutation } from "../../../API/Comments/useUploadCommentMutation";
 import { useCommentsQuery } from "../../../API/Comments/useCommentsQuery";
+import { format } from "date-fns";
 
 const Translations = TranslationResources.Post.Comments;
 
@@ -19,6 +20,7 @@ export type Props = {
 
 export const CommentComponent: FC<PropsWithChildren<Props>> = ({ postId }) => {
 	const { t } = useTranslation();
+	const theme = useTheme();
 
 	const { data: comments } = useCommentsQuery(postId);
 	const { mutate } = useUploadCommentMutation();
@@ -44,20 +46,17 @@ export const CommentComponent: FC<PropsWithChildren<Props>> = ({ postId }) => {
 
 	const submit = (data: CreateCommentDTO) => {
 		mutate(data);
+		form.setValue("body", "");
 	};
 
 	return (
-		<Stack pt={2} borderRadius={2} justifyContent="center" alignItems="center">
-			<Stack
-				bgcolor={(t) => t.palette.grey[100]}
-				width="100%"
-				p={2}
-				borderRadius={2}
-				gap={2}
-			>
-				<Typography variant="h1">{t(Translations.title)}</Typography>
+		<Stack pb={2} gap={3}>
+			<Typography variant="h5" fontWeight={700}>
+				{t(Translations.title)}
+			</Typography>
+			<Stack>
 				<form onSubmit={handleSubmit(submit)}>
-					<Stack gap={1}>
+					<Stack gap={2}>
 						<Typography variant="h3">
 							{t(Translations.postNewComment)}
 						</Typography>
@@ -69,20 +68,25 @@ export const CommentComponent: FC<PropsWithChildren<Props>> = ({ postId }) => {
 						</Stack>
 					</Stack>
 				</form>
-				<Stack gap={1}>
-					{comments?.map((comment) => (
-						<Stack key={comment.id} gap={1}>
-							<Stack>
-								<Typography variant="h3">{comment.user.username}</Typography>
-								<Typography variant="subtitle2">
-									{comment.user.email}
-								</Typography>
-							</Stack>
-							<Typography variant="body1">{comment.body}</Typography>
-							<Divider sx={{ borderBottomWidth: 2 }} />
+			</Stack>
+			<Stack gap={1}>
+				{comments?.map((comment) => (
+					<Stack
+						key={comment.id}
+						bgcolor={(t) => t.palette.grey[50]}
+						gap={1}
+						p={1.6}
+						borderRadius={2}
+					>
+						<Stack justifyContent="space-between" direction="row">
+							<Typography variant="h3">{comment.user.username}</Typography>
+							<Typography fontSize={14} color={theme.palette.grey[600]}>
+								{format(new Date(comment.createdAt), "MM/dd/yyyy")}
+							</Typography>
 						</Stack>
-					))}
-				</Stack>
+						<Typography fontSize={16}>{comment.body}</Typography>
+					</Stack>
+				))}
 			</Stack>
 		</Stack>
 	);

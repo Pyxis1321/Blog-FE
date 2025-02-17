@@ -1,4 +1,4 @@
-import { Button, Modal, Stack } from "@mui/material";
+import { Box, Button, Modal, Stack, Typography, useTheme } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFilterPostQuery } from "../../API/Dashboard/useFilterPostQuery";
 import parse, {
@@ -15,8 +15,9 @@ import { useDeletePostMutation } from "../../API/Dashboard/mutations/useDeletePo
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useUserInfo } from "../../API/Auth/useUserInfo";
 import { PostFormComponent } from "../Auth/Components/PostFormComponent";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import React from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import { format } from "date-fns";
 
 const options: HTMLReactParserOptions = {
 	replace: (domNode: DOMNode) => {
@@ -46,6 +47,7 @@ export const PostPage: React.FunctionComponent = (_) => {
 	const { id } = useParams<{ id: string }>();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const theme = useTheme();
 
 	const { data } = useFilterPostQuery(Number(id));
 	const { mutate: deletePost } = useDeletePostMutation();
@@ -71,32 +73,68 @@ export const PostPage: React.FunctionComponent = (_) => {
 	};
 
 	return (
-		<Stack p={3}>
-			<Stack
-				gap={1}
-				justifyContent={"end"}
-				alignItems={"end"}
-				pb={3}
-				direction={"row"}
-			>
-				{userInfo?.id === data?.user.id && (
-					<Button
-						color="primary"
-						onClick={() => setModal(true)}
-						startIcon={<AddCircleOutlineIcon />}
+		<Stack px={25} pt={5} gap={3}>
+			{data?.imageUrl && (
+				<Stack>
+					<Box
+						component="img"
+						src={data?.imageUrl ?? ""}
+						alt="default"
+						width="100%"
+						height={600}
+						sx={{
+							width: "100%",
+							height: "400px",
+							borderRadius: "8px",
+							objectFit: "cover",
+							objectPosition: "center",
+						}}
+					/>
+				</Stack>
+			)}
+			<Stack gap={1} direction="row">
+				<Stack>
+					<Typography
+						sx={{
+							fontSize: "2.25rem",
+							fontWeight: 700,
+						}}
 					>
-						{t(TranslationResources.Post.Post.editButton)}
-					</Button>
-				)}
-				<Button
-					color="error"
-					startIcon={<DeleteIcon />}
-					onClick={() => setDeleteDialog(true)}
-				>
-					{t(TranslationResources.Post.Post.deleteButton)}
-				</Button>
+						{data?.title}
+					</Typography>
+				</Stack>
 			</Stack>
-			{data?.body && parse(data.body, options)}
+			<Stack justifyContent="space-between" direction="row" alignItems="center">
+				<Typography
+					fontSize={14}
+					color={theme.palette.grey[600]}
+				>{`By ${data?.user.username} | ${data?.createdAt ? format(new Date(data?.createdAt ?? ""), "MM/dd/yyyy") : ""}`}</Typography>
+				<Stack direction="row" gap={1}>
+					{userInfo?.id === data?.user.id && (
+						<Button
+							variant="outlined"
+							onClick={() => setModal(true)}
+							startIcon={<EditIcon />}
+						>
+							{t(TranslationResources.Post.Post.editButton)}
+						</Button>
+					)}
+					{(userInfo?.id === data?.user.id ||
+						userInfo?.roles?.includes("Administrator")) && (
+						<Button
+							variant="contained"
+							color="error"
+							startIcon={<DeleteIcon />}
+							onClick={() => setDeleteDialog(true)}
+						>
+							{t(TranslationResources.Post.Post.deleteButton)}
+						</Button>
+					)}
+				</Stack>
+			</Stack>
+			<Box sx={{ fontSize: "16px" }}>
+				{data?.body && parse(data.body, options)}
+			</Box>
 			<CommentComponent postId={Number(id)} />
 
 			<Modal
@@ -120,6 +158,7 @@ export const PostPage: React.FunctionComponent = (_) => {
 			<ConfirmationDialog
 				open={deleteDialog}
 				title={t(TranslationResources.Post.DeletePostDialog.title)}
+				body={t(TranslationResources.Post.DeletePostDialog.content)}
 				onClose={handleDeleteDialogClose}
 			/>
 		</Stack>

@@ -216,7 +216,7 @@ const theme = (color: ColorsType, variant: PaletteMode): Theme => {
             margin: 0,
             padding: 0,
             boxSizing: "border-box",
-            backgroundColor: color.MonoChrome50,
+            backgroundColor: color.White,
           },
         },
       },

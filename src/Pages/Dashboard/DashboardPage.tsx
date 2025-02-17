@@ -6,6 +6,7 @@ import {
 	Tab,
 	Tabs,
 	Typography,
+	useTheme,
 } from "@mui/material";
 
 import { TranslationResources } from "../../Translations/EnglishTranslation";
@@ -18,6 +19,7 @@ import { TabsHeaderWrapper } from "./Components/TabsHeaderWrapper";
 import HomeIcon from "@mui/icons-material/Home";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { SettingsComponent } from "./Components/SettingsComponents";
+import { Logo } from "../../Shared/SVGs/Logo";
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -56,6 +58,7 @@ const Translations = TranslationResources;
 
 export const Dashboard: React.FunctionComponent = (_) => {
 	const { t } = useTranslation();
+	const theme = useTheme();
 	const [modal, setModal] = useState(false);
 	const [dialog, setDialog] = useState(false);
 	const [dirty, setDirty] = useState(false);
@@ -85,7 +88,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 	};
 
 	return (
-		<Stack bgcolor={(t) => t.palette.grey[50]} pt={2}>
+		<Stack py={2}>
 			{isFetching && (
 				<Stack
 					position="absolute"
@@ -100,11 +103,26 @@ export const Dashboard: React.FunctionComponent = (_) => {
 			)}
 			<Stack direction="row">
 				<Stack px={1}>
+					<Stack direction={"row"} alignItems={"center"} gap={1} pb={2}>
+						<Logo
+							width={28}
+							height={28}
+							color={
+								theme.palette.mode === "dark"
+									? theme.palette.common.white
+									: theme.palette.common.black
+							}
+						/>
+						<Typography variant="h2" fontWeight={700}>
+							{t(Translations.Auth.website)}
+						</Typography>
+					</Stack>
 					<Tabs
 						orientation="vertical"
 						variant="scrollable"
 						value={value}
 						onChange={handleChange}
+						sx={{ width: 150 }}
 					>
 						<Tab
 							label={t(Translations.Dashboard.Tabs.Home.tab)}
@@ -151,7 +169,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 				}}
 			>
 				<Stack width="60%">
-					<PostFormComponent setDirty={setDirty} />
+					<PostFormComponent setDirty={setDirty} setDialogOpen={setModal} />
 				</Stack>
 			</Modal>
 			<ConfirmationDialog

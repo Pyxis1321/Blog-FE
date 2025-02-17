@@ -72,18 +72,19 @@ export const DashboardComponent: React.FC<Props> = ({
 					.map((post) => (
 						<Grid2 key={post.id} size={{ xs: 12, sm: 6, md: 3 }}>
 							<Stack
-								bgcolor={(t) => t.palette.grey[50]}
 								borderRadius={2}
 								sx={{
 									cursor: "pointer",
 									border: (t) => `1px solid ${t.palette.grey[200]}`,
 									width: "100%",
-									height: 300,
+									height: 400,
 								}}
 								onClick={() => handleClick(post.id)}
 							>
 								<Stack p={1}>
-									<Typography variant="h2">{post.title}</Typography>
+									<Typography variant="h2" noWrap pt={1} pb={2}>
+										{post.title}
+									</Typography>
 								</Stack>
 								{post.imageUrl ? (
 									<Box
@@ -91,18 +92,22 @@ export const DashboardComponent: React.FC<Props> = ({
 										src={post.imageUrl ?? ""}
 										alt="default"
 										sx={{
-											width: "100%",
-											height: "180px",
+											display: "block",
+											mx: "auto",
+											width: "95%",
+											height: "250px",
 											objectFit: "contain",
 											borderTopLeftRadius: 8,
 											borderTopRightRadius: 8,
+											borderBottomRightRadius: 8,
+											borderBottomLeftRadius: 8,
 										}}
 									/>
 								) : (
 									<Stack
 										alignItems="center"
 										justifyContent="center"
-										sx={{ width: "100%", height: "180px" }}
+										sx={{ width: "100%", height: "250px" }}
 									>
 										<ImageNotSupportedIcon
 											sx={{ width: "100%", height: "100%" }}

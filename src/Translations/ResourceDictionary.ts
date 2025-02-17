@@ -1,10 +1,30 @@
 export interface ResourceDictionary {
   Auth: {
+    website: string;
+    loginTitle: string;
+    registerTitle: string;
+    registrationQuestion: string;
+    loginQuestion: string;
     username: string;
+    email: string;
     password: string;
-    registration: string;
+    confirmPassword: string;
+    registrationText: string;
+    loginText: string;
+    login: string;
+    register: string;
     Form: {
       required: string;
+      Validation: {
+        passwordsNotMatching: string;
+        PasswordRules: {
+          passwordMinLength: string;
+          passwordDigit: string;
+          passwordLowercase: string;
+          passwordUppercase: string;
+          passwordSpecialCharacter: string;
+        };
+      };
     };
   };
   Dashboard: {
@@ -50,6 +70,7 @@ export interface ResourceDictionary {
     };
     DeletePostDialog: {
       title: string;
+      content: string;
     };
   };
   Components: {

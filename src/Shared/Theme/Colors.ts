@@ -35,11 +35,11 @@ export const Colors = {
   MonoChrome500: "#636365",
   MonoChrome600: "#454547",
   MonoChrome700: "#272729",
-  MonoChrome800: "#09090B",
+  MonoChrome800: "#141419",
 
   White: "#FFFFFF",
 
-  Black: "#0F172A",
+  Black: "#09090B",
   Black75: "#5D6370",
   Black50: "#838891",
   Black25: "#838891",
@@ -125,7 +125,7 @@ export const DarkModeColors = {
   Danger50: "#EF88A0",
   Danger25: "#F4ADBD",
 
-  MonoChrome50: "#09090B",
+  MonoChrome50: "#141419",
   MonoChrome100: "#272729",
   MonoChrome200: "#454547",
   MonoChrome300: "#636365",
@@ -135,7 +135,7 @@ export const DarkModeColors = {
   MonoChrome700: "#DADCDE",
   MonoChrome800: "#F8FAFC",
 
-  White: "#0F172A",
+  White: "#09090B",
 
   Black: "#FFFFFF",
   Black75: "#5D6370",
