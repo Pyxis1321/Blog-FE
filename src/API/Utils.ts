@@ -1,5 +1,4 @@
 import type {
-  DefaultError,
   QueryFunctionContext,
   QueryKey,
   UseQueryOptions,
@@ -10,9 +9,8 @@ import type {
   FetchResponse,
   FetchResponseOfError,
 } from "../Shared/Api";
-import { SessionState } from "../Shared/State/SessionAtom";
 
-type BaseResponse<TData = unknown> =
+export type BaseResponse<TData = unknown> =
   | FetchResponse<TData, number>
   | ErrorResponse;
 

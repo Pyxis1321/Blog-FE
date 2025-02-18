@@ -1,21 +1,14 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	Grid2,
-	Stack,
-	TextField,
-	Typography,
-	useTheme,
-} from "@mui/material";
+import { Button, Grid2, Stack, TextField, Typography } from "@mui/material";
 import { useDashboardAllPostsQuery } from "../../../API/Dashboard/useDashboardAllPostsQuery";
 import { useNavigate } from "react-router-dom";
 import { Routing } from "../../../Shared/Routing/Routing";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TranslationResources } from "../../../Translations/EnglishTranslation";
-import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
-import { format } from "date-fns";
+import { usePostHog } from "posthog-js/react";
+import { useGetTrendingPosts } from "../../../API/Analytics/useGetTrendingPosts";
+import type { TopPost } from "../../../API/Analytics/getAnalytics";
+import { PostCard } from "./PostCard";
 
 export const sanitizeHtml = (html: string): string => {
 	if (!html) return "";
@@ -34,17 +27,29 @@ export const DashboardComponent: React.FC<Props> = ({
 	setModal,
 }) => {
 	const { t } = useTranslation();
-	const theme = useTheme();
 	const navigate = useNavigate();
+	const posthog = usePostHog();
 
 	const { data, isFetching } = useDashboardAllPostsQuery();
+	const { data: trendingPosts } = useGetTrendingPosts();
 	const [search, setSearch] = useState("");
+
+	const tp = trendingPosts as unknown as [string, number][];
+	const topPosts: TopPost[] = tp?.map(([postId, count]) => ({ postId, count }));
+	const topPostIds: string[] = topPosts.map((post) => post.postId);
+
+	const filteredPosts = useMemo(() => {
+		return data?.filter((post) => topPostIds.includes(post.id.toString()));
+	}, [data, topPostIds]);
 
 	useEffect(() => {
 		setFetching(isFetching);
 	}, [isFetching, setFetching]);
 
 	const handleClick = (postId: number) => {
+		posthog.capture("post_clicked", {
+			post_id: postId,
+		});
 		navigate(Routing.Post.path(postId));
 	};
 
@@ -64,6 +69,18 @@ export const DashboardComponent: React.FC<Props> = ({
 					</Button>
 				</Stack>
 			)}
+			<Typography variant="h2">Trending posts:</Typography>
+			<Grid2 container spacing={2}>
+				{filteredPosts
+					?.filter((post) =>
+						post?.title?.toLowerCase().includes(search.toLowerCase()),
+					)
+					.map((post) => (
+						<Grid2 key={post.id} size={{ xs: 12, sm: 6, md: 3 }}>
+							<PostCard post={post} onClick={handleClick} />
+						</Grid2>
+					))}
+			</Grid2>
 			<Grid2 container spacing={2}>
 				{data
 					?.filter((post) =>
@@ -71,78 +88,7 @@ export const DashboardComponent: React.FC<Props> = ({
 					)
 					.map((post) => (
 						<Grid2 key={post.id} size={{ xs: 12, sm: 6, md: 3 }}>
-							<Stack
-								borderRadius={2}
-								sx={{
-									cursor: "pointer",
-									border: (t) => `1px solid ${t.palette.grey[200]}`,
-									width: "100%",
-									height: 400,
-								}}
-								onClick={() => handleClick(post.id)}
-							>
-								<Stack p={1}>
-									<Typography variant="h2" noWrap pt={1} pb={2}>
-										{post.title}
-									</Typography>
-								</Stack>
-								{post.imageUrl ? (
-									<Box
-										component="img"
-										src={post.imageUrl ?? ""}
-										alt="default"
-										sx={{
-											display: "block",
-											mx: "auto",
-											width: "95%",
-											height: "250px",
-											objectFit: "contain",
-											borderTopLeftRadius: 8,
-											borderTopRightRadius: 8,
-											borderBottomRightRadius: 8,
-											borderBottomLeftRadius: 8,
-										}}
-									/>
-								) : (
-									<Stack
-										alignItems="center"
-										justifyContent="center"
-										sx={{ width: "100%", height: "250px" }}
-									>
-										<ImageNotSupportedIcon
-											sx={{ width: "100%", height: "100%" }}
-										/>
-									</Stack>
-								)}
-								<Stack p={1} height="100%" justifyContent="center">
-									<Stack
-										justifyContent="space-between"
-										direction="row"
-										alignItems="center"
-									>
-										<Stack direction="row" alignItems="center" gap={1}>
-											<Avatar
-												alt=""
-												src={`https://avatar.vercel.sh/${post.user.id}`}
-											/>
-											<Typography
-												fontSize="14px"
-												fontWeight="500"
-												color={theme.palette.grey[500]}
-											>
-												{post.user.username}
-											</Typography>
-										</Stack>
-										<Typography
-											fontSize="14px"
-											fontWeight="500"
-											color={theme.palette.grey[500]}
-										>
-											{format(new Date(post.createdAt), "MM/dd/yyyy")}
-										</Typography>
-									</Stack>
-								</Stack>
-							</Stack>
+							<PostCard post={post} onClick={handleClick} />
 						</Grid2>
 					))}
 			</Grid2>
