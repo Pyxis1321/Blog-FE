@@ -36,7 +36,7 @@ export const DashboardComponent: React.FC<Props> = ({
 
 	const tp = trendingPosts as unknown as [string, number][];
 	const topPosts: TopPost[] = tp?.map(([postId, count]) => ({ postId, count }));
-	const topPostIds: string[] = topPosts.map((post) => post.postId);
+	const topPostIds: string[] = topPosts?.map((post) => post.postId);
 
 	const filteredPosts = useMemo(() => {
 		return data?.filter((post) => topPostIds.includes(post.id.toString()));
@@ -76,7 +76,7 @@ export const DashboardComponent: React.FC<Props> = ({
 						post?.title?.toLowerCase().includes(search.toLowerCase()),
 					)
 					.map((post) => (
-						<Grid2 key={post.id} size={{ xs: 12, sm: 6, md: 3 }}>
+						<Grid2 key={post.id}>
 							<PostCard post={post} onClick={handleClick} />
 						</Grid2>
 					))}
@@ -87,7 +87,7 @@ export const DashboardComponent: React.FC<Props> = ({
 						post?.title?.toLowerCase().includes(search.toLowerCase()),
 					)
 					.map((post) => (
-						<Grid2 key={post.id} size={{ xs: 12, sm: 6, md: 3 }}>
+						<Grid2 key={post.id}>
 							<PostCard post={post} onClick={handleClick} />
 						</Grid2>
 					))}

@@ -55,6 +55,7 @@ export const TranslationResources: ResourceDictionary = {
       headerTitleEdit: "Edit post",
       title: "Title",
       image: "Title image URL",
+      tag: "Tag",
       dialogTitle: "Discard post?",
       dialogBody: "Are you sure you want to discard this post?",
       dialogConfirmButton: "Discard",

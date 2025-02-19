@@ -10,6 +10,7 @@ import { FormQuillInput } from "../../../Shared/Components/Form/FormTextEdit";
 import { useUploadPostMutation } from "../../../API/Dashboard/mutations/useUploadPostMutation";
 import {
 	PostStatus,
+	PostTag,
 	type CreatePostDTO,
 	type EditPostDto,
 	type PostDTO,
@@ -19,6 +20,10 @@ import { useEditPostMutation } from "../../../API/Dashboard/mutations/useEditPos
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { dashboardKeys } from "../../../API/Dashboard/keys";
+import {
+	FormSelect,
+	type SelectOption,
+} from "../../../Shared/Components/Form/FormSelect";
 
 const Translations = TranslationResources;
 
@@ -41,14 +46,24 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 	const { mutate: createPost } = useUploadPostMutation();
 	const { mutate: editPost } = useEditPostMutation();
 
+	const tagOptions: SelectOption[] = Object.values(PostTag).map((tag) => ({
+		value: tag,
+		label: tag,
+	}));
+
 	const PostFormModelSchema = z.object({
-		title: z.string({
-			required_error: t(TranslationResources.Auth.Form.required),
-		}),
-		body: z.string({
-			required_error: t(TranslationResources.Auth.Form.required),
-		}),
-		imageUrl: z.string({
+		title: z
+			.string({
+				required_error: t(TranslationResources.Auth.Form.required),
+			})
+			.min(1, { message: t(TranslationResources.Auth.Form.required) }),
+		body: z
+			.string({
+				required_error: t(TranslationResources.Auth.Form.required),
+			})
+			.min(1, { message: t(TranslationResources.Auth.Form.required) }),
+		imageUrl: z.string(),
+		tag: z.nativeEnum(PostTag, {
 			required_error: t(TranslationResources.Auth.Form.required),
 		}),
 	});
@@ -61,6 +76,7 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 			title: post?.title ?? "",
 			body: post?.body ?? "",
 			imageUrl: post?.imageUrl ?? "",
+			tag: post?.tag ?? PostTag.Other,
 		},
 	});
 
@@ -92,6 +108,7 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 			title: data.title,
 			body: data.body,
 			imageUrl: data.imageUrl,
+			tag: data.tag,
 			status: PostStatus.Published,
 		};
 
@@ -140,6 +157,12 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 						control={control}
 						name="imageUrl"
 						label={t(Translations.Post.PostForm.image)}
+					/>
+					<FormSelect
+						control={control}
+						name="tag"
+						options={tagOptions}
+						label={t(Translations.Post.PostForm.tag)}
 					/>
 					<FormQuillInput control={control} name="body" />
 				</Stack>

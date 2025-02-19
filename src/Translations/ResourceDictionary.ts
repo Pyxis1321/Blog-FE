@@ -53,6 +53,7 @@ export interface ResourceDictionary {
       headerTitleEdit: string;
       title: string;
       image: string;
+      tag: string;
       dialogTitle: string;
       dialogBody: string;
       dialogConfirmButton: string;
