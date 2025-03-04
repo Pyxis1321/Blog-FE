@@ -32,6 +32,11 @@ export interface ResourceDictionary {
       Home: {
         tab: string;
         title: string;
+        forYou: string;
+        trending: string;
+      };
+      Posts: {
+        title: string;
       };
       Settings: {
         title: string;

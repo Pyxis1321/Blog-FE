@@ -34,6 +34,11 @@ export const TranslationResources: ResourceDictionary = {
       Home: {
         tab: "Home",
         title: "Welcome to the dashboard",
+        forYou: "For you",
+        trending: "Trending",
+      },
+      Posts: {
+        title: "Posts",
       },
       Settings: {
         title: "Settings",

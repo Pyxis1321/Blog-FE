@@ -75,7 +75,7 @@ export const PostPage: React.FunctionComponent = (_) => {
 	return (
 		<Stack px={25} pt={5} gap={3}>
 			{data?.imageUrl && (
-				<Stack>
+				<Stack position={"relative"}>
 					<Box
 						component="img"
 						src={data?.imageUrl ?? ""}
@@ -90,6 +90,17 @@ export const PostPage: React.FunctionComponent = (_) => {
 							objectPosition: "center",
 						}}
 					/>
+					<Stack position="absolute" top={10} left={10}>
+						<Stack bgcolor={theme.palette.grey[900]} borderRadius={8} p={1}>
+							<Typography
+								fontSize={18}
+								fontWeight={600}
+								color={theme.palette.common.white}
+							>
+								{data.tag}
+							</Typography>
+						</Stack>
+					</Stack>
 				</Stack>
 			)}
 			<Stack gap={1} direction="row">
@@ -105,10 +116,23 @@ export const PostPage: React.FunctionComponent = (_) => {
 				</Stack>
 			</Stack>
 			<Stack justifyContent="space-between" direction="row" alignItems="center">
-				<Typography
-					fontSize={14}
-					color={theme.palette.grey[600]}
-				>{`By ${data?.user.username} | ${data?.createdAt ? format(new Date(data?.createdAt ?? ""), "MM/dd/yyyy") : ""}`}</Typography>
+				<Stack direction="row" gap={2} alignItems="center">
+					<Typography
+						fontSize={14}
+						color={theme.palette.grey[600]}
+					>{`By ${data?.user.username} | ${data?.createdAt ? format(new Date(data?.createdAt ?? ""), "MM/dd/yyyy") : ""}`}</Typography>
+					{!data?.imageUrl && (
+						<Stack bgcolor={theme.palette.grey[900]} borderRadius={8} p={1}>
+							<Typography
+								fontSize={18}
+								fontWeight={600}
+								color={theme.palette.common.white}
+							>
+								{data?.tag}
+							</Typography>
+						</Stack>
+					)}
+				</Stack>
 				<Stack direction="row" gap={1}>
 					{userInfo?.id === data?.user.id && (
 						<Button

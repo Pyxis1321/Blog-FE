@@ -8,7 +8,6 @@ import {
 	Typography,
 	useTheme,
 } from "@mui/material";
-
 import { TranslationResources } from "../../Translations/EnglishTranslation";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -20,6 +19,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { SettingsComponent } from "./Components/SettingsComponents";
 import { Logo } from "../../Shared/SVGs/Logo";
+import { PostsComponent } from "./Components/PostsComponent";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -129,12 +130,27 @@ export const Dashboard: React.FunctionComponent = (_) => {
 							{...a11yProps(0)}
 							icon={<HomeIcon />}
 							iconPosition="start"
+							sx={{
+								minHeight: "50px",
+							}}
+						/>
+						<Tab
+							label={t(Translations.Dashboard.Tabs.Posts.title)}
+							{...a11yProps(1)}
+							icon={<MenuBookIcon />}
+							iconPosition="start"
+							sx={{
+								minHeight: "50px",
+							}}
 						/>
 						<Tab
 							label={t(Translations.Dashboard.Tabs.Settings.title)}
 							{...a11yProps(1)}
 							icon={<SettingsIcon />}
 							iconPosition="start"
+							sx={{
+								minHeight: "50px",
+							}}
 						/>
 					</Tabs>
 				</Stack>
@@ -151,6 +167,13 @@ export const Dashboard: React.FunctionComponent = (_) => {
 						</TabsHeaderWrapper>
 					</TabPanel>
 					<TabPanel value={value} index={1}>
+						<TabsHeaderWrapper
+							title={t(Translations.Dashboard.Tabs.Home.title)}
+						>
+							<PostsComponent setFetching={setIsFetching} setModal={setModal} />
+						</TabsHeaderWrapper>
+					</TabPanel>
+					<TabPanel value={value} index={2}>
 						<TabsHeaderWrapper
 							title={t(Translations.Dashboard.Tabs.Settings.title)}
 						>

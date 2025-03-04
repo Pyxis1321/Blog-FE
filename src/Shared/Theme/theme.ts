@@ -227,6 +227,26 @@ const theme = (color: ColorsType, variant: PaletteMode): Theme => {
           },
         },
       },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: {
+            padding: "2px",
+          },
+          input: {
+            padding: "12px 14px",
+          },
+        },
+      },
+      MuiInputLabel: {
+        styleOverrides: {
+          outlined: {
+            transform: "translate(14px, 14px) scale(1)",
+            "&.MuiInputLabel-shrink": {
+              transform: "translate(14px, -6px) scale(0.75)",
+            },
+          },
+        },
+      },
     },
     colors: {
       placeholder: color.MonoChrome400,
