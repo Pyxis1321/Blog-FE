@@ -1,15 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { dashboardKeys } from "./keys";
 import { processResponse, type QueryBasicOptions } from "../Utils";
-import { getApiPosts } from "../../Shared/Api";
+import { getApiPosts, type PostStatus } from "../../Shared/Api";
 import { useAtomValue } from "jotai";
 import { sessionState } from "../../Shared/State/SessionAtom";
 
-export function useDashboardAllPostsQuery(options?: QueryBasicOptions) {
+export function useDashboardPostQuery(
+  status?: PostStatus,
+  options?: QueryBasicOptions
+) {
   const sessionAtom = useAtomValue(sessionState);
   return useQuery({
-    queryKey: dashboardKeys.posts(),
-    queryFn: processResponse(() => getApiPosts()),
+    queryKey: dashboardKeys.posts(status),
+    queryFn: processResponse(() => getApiPosts(status)),
     enabled: !!sessionAtom.accessToken && sessionAtom.accessToken !== "",
     ...options,
   });

@@ -1,5 +1,5 @@
 import { Grid2, Stack, Typography } from "@mui/material";
-import { useDashboardAllPostsQuery } from "../../../API/Dashboard/useDashboardAllPostsQuery";
+import { useDashboardPostQuery } from "../../../API/Dashboard/useDashboardAllPostsQuery";
 import { useNavigate } from "react-router-dom";
 import { Routing } from "../../../Shared/Routing/Routing";
 import { useEffect, useMemo } from "react";
@@ -8,8 +8,8 @@ import { TranslationResources } from "../../../Translations/EnglishTranslation";
 import { usePostHog } from "posthog-js/react";
 import { useGetTrendingPosts } from "../../../API/Analytics/useGetTrendingPosts";
 import type { TopPost } from "../../../API/Analytics/getAnalytics";
-import { PostCard } from "./PostCard";
-import type { PostDTO, PostTag } from "../../../Shared/Api";
+import { PostCardVertical } from "./PostCardVertical";
+import { PostStatus, type PostDTO, type PostTag } from "../../../Shared/Api";
 import { useGetPersonilizedPosts } from "../../../API/Analytics/useGetPersonilizedPosts";
 import { useUserInfo } from "../../../API/Auth/useUserInfo";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -33,7 +33,7 @@ export const DashboardComponent: React.FC<Props> = ({ setFetching }) => {
 	const posthog = usePostHog();
 
 	const { data: userInfo } = useUserInfo();
-	const { data, isFetching } = useDashboardAllPostsQuery();
+	const { data, isFetching } = useDashboardPostQuery(PostStatus.Published);
 	const { data: trendingPosts } = useGetTrendingPosts();
 	const { data: personalizedPosts } = useGetPersonilizedPosts(
 		userInfo?.id ?? "",
@@ -85,7 +85,7 @@ export const DashboardComponent: React.FC<Props> = ({ setFetching }) => {
 			<Grid2 container spacing={2}>
 				{personilizedSection.map((post) => (
 					<Grid2 key={post.id}>
-						<PostCard post={post} onClick={() => handleClick(post)} />
+						<PostCardVertical post={post} onClick={() => handleClick(post)} />
 					</Grid2>
 				))}
 			</Grid2>
@@ -98,7 +98,7 @@ export const DashboardComponent: React.FC<Props> = ({ setFetching }) => {
 			<Grid2 container spacing={2}>
 				{filteredPosts?.map((post) => (
 					<Grid2 key={post.id}>
-						<PostCard post={post} onClick={() => handleClick(post)} />
+						<PostCardVertical post={post} onClick={() => handleClick(post)} />
 					</Grid2>
 				))}
 			</Grid2>

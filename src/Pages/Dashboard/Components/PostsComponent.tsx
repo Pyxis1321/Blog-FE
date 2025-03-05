@@ -1,6 +1,5 @@
 import {
 	Button,
-	Grid2,
 	Stack,
 	TextField,
 	Typography,
@@ -8,16 +7,16 @@ import {
 	Box,
 	useTheme,
 } from "@mui/material";
-import { useDashboardAllPostsQuery } from "../../../API/Dashboard/useDashboardAllPostsQuery";
+import { useDashboardPostQuery } from "../../../API/Dashboard/useDashboardAllPostsQuery";
 import { useNavigate } from "react-router-dom";
 import { Routing } from "../../../Shared/Routing/Routing";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TranslationResources } from "../../../Translations/EnglishTranslation";
 import { usePostHog } from "posthog-js/react";
-import { PostCard } from "./PostCard";
-import type { PostDTO } from "../../../Shared/Api";
+import { PostStatus, type PostDTO } from "../../../Shared/Api";
 import { useUserInfo } from "../../../API/Auth/useUserInfo";
+import { PostCardHorizontal } from "./PostCardHorizontal";
 
 export enum PostTag {
 	Science = "Science",
@@ -46,7 +45,7 @@ export const PostsComponent: React.FC<Props> = ({ setFetching, setModal }) => {
 	const posthog = usePostHog();
 	const { data: userInfo } = useUserInfo();
 
-	const { data, isFetching } = useDashboardAllPostsQuery();
+	const { data, isFetching } = useDashboardPostQuery(PostStatus.Published);
 	const [search, setSearch] = useState("");
 	const [selectedTag, setSelectedTag] = useState<string | null>(null);
 	const allTags = Object.values(PostTag);
@@ -107,7 +106,7 @@ export const PostsComponent: React.FC<Props> = ({ setFetching, setModal }) => {
 				))}
 			</Stack>
 
-			<Grid2 container spacing={2}>
+			<Stack spacing={2}>
 				{data
 					?.filter((post) => {
 						const matchesSearch = post?.title
@@ -117,11 +116,14 @@ export const PostsComponent: React.FC<Props> = ({ setFetching, setModal }) => {
 						return matchesSearch && matchesTag;
 					})
 					.map((post) => (
-						<Grid2 key={post.id}>
-							<PostCard post={post} onClick={() => handleClick(post)} />
-						</Grid2>
+						<Stack key={post.id}>
+							<PostCardHorizontal
+								post={post}
+								onClick={() => handleClick(post)}
+							/>
+						</Stack>
 					))}
-			</Grid2>
+			</Stack>
 		</Stack>
 	);
 };

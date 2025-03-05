@@ -247,6 +247,13 @@ const theme = (color: ColorsType, variant: PaletteMode): Theme => {
           },
         },
       },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            color: color.Black,
+          },
+        },
+      },
     },
     colors: {
       placeholder: color.MonoChrome400,

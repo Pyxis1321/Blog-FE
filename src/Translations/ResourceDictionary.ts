@@ -47,6 +47,15 @@ export interface ResourceDictionary {
           logout: string;
         };
       };
+      Administration: {
+        subtitle: string;
+        title: string;
+        Tabs: {
+          pending: string;
+          approved: string;
+          rejected: string;
+        };
+      };
     };
     addPost: string;
     placeholder: string;
@@ -73,6 +82,10 @@ export interface ResourceDictionary {
     Post: {
       deleteButton: string;
       editButton: string;
+      pending: string;
+      adminReview: string;
+      approve: string;
+      reject: string;
     };
     DeletePostDialog: {
       title: string;

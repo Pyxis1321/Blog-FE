@@ -6,10 +6,14 @@ import { sanitizeHtml } from "./DashboardComponent";
 
 export interface PostCardProps {
 	post: PostDTO;
+	stateTag?: boolean;
 	onClick: (postId: number) => void;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ post, onClick }) => {
+export const PostCardVertical: React.FC<PostCardProps> = ({
+	post,
+	onClick,
+}) => {
 	const theme = useTheme();
 
 	return (

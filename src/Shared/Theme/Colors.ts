@@ -110,7 +110,7 @@ export const DarkModeColors = {
   Secondary25: "#A3DBF7",
   Secondary10: "#CCEBFB",
 
-  Success: "#90CC11",
+  Success: "#16a34a",
   Success75: "#B4DC5D",
   Success50: "#C5E483",
   Success25: "#D7EDA9",

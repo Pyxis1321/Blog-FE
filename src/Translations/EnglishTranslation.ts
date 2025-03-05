@@ -40,6 +40,15 @@ export const TranslationResources: ResourceDictionary = {
       Posts: {
         title: "Posts",
       },
+      Administration: {
+        subtitle: "ADMIN",
+        title: "Administration",
+        Tabs: {
+          pending: "Pending",
+          approved: "Approved",
+          rejected: "Rejected",
+        },
+      },
       Settings: {
         title: "Settings",
         Component: {
@@ -75,6 +84,10 @@ export const TranslationResources: ResourceDictionary = {
     Post: {
       deleteButton: "Delete",
       editButton: "Edit",
+      pending: "This post is pending review",
+      adminReview: "Admin review",
+      approve: "Approve post",
+      reject: "Reject post",
     },
     DeletePostDialog: {
       title: "Delete post",

@@ -21,6 +21,9 @@ import { SettingsComponent } from "./Components/SettingsComponents";
 import { Logo } from "../../Shared/SVGs/Logo";
 import { PostsComponent } from "./Components/PostsComponent";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import { useUserInfo } from "../../API/Auth/useUserInfo";
+import SecurityIcon from "@mui/icons-material/Security";
+import { AdministrationComponent } from "./Components/AdministrationComponent";
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -63,6 +66,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 	const [modal, setModal] = useState(false);
 	const [dialog, setDialog] = useState(false);
 	const [dirty, setDirty] = useState(false);
+	const { data: userData } = useUserInfo();
 
 	const [isFetching, setIsFetching] = useState(false);
 
@@ -123,7 +127,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 						variant="scrollable"
 						value={value}
 						onChange={handleChange}
-						sx={{ width: 150 }}
+						sx={{ width: 170 }}
 					>
 						<Tab
 							label={t(Translations.Dashboard.Tabs.Home.tab)}
@@ -132,6 +136,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 							iconPosition="start"
 							sx={{
 								minHeight: "50px",
+								justifyContent: "flex-start",
 							}}
 						/>
 						<Tab
@@ -141,17 +146,31 @@ export const Dashboard: React.FunctionComponent = (_) => {
 							iconPosition="start"
 							sx={{
 								minHeight: "50px",
+								justifyContent: "flex-start",
 							}}
 						/>
 						<Tab
 							label={t(Translations.Dashboard.Tabs.Settings.title)}
-							{...a11yProps(1)}
+							{...a11yProps(2)}
 							icon={<SettingsIcon />}
 							iconPosition="start"
 							sx={{
 								minHeight: "50px",
+								justifyContent: "flex-start",
 							}}
 						/>
+						{userData?.roles?.includes("Administrator") && (
+							<Tab
+								label={t(Translations.Dashboard.Tabs.Administration.title)}
+								{...a11yProps(3)}
+								icon={<SecurityIcon />}
+								iconPosition="start"
+								sx={{
+									minHeight: "50px",
+									justifyContent: "flex-start",
+								}}
+							/>
+						)}
 					</Tabs>
 				</Stack>
 
@@ -180,6 +199,15 @@ export const Dashboard: React.FunctionComponent = (_) => {
 							<SettingsComponent />
 						</TabsHeaderWrapper>
 					</TabPanel>
+					{userData?.roles?.includes("Administrator") && (
+						<TabPanel value={value} index={3}>
+							<TabsHeaderWrapper
+								title={t(Translations.Dashboard.Tabs.Administration.title)}
+							>
+								<AdministrationComponent />
+							</TabsHeaderWrapper>
+						</TabPanel>
+					)}
 				</Stack>
 			</Stack>
 			<Modal

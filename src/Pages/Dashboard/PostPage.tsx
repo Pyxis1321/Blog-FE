@@ -18,6 +18,11 @@ import { PostFormComponent } from "../Auth/Components/PostFormComponent";
 import React from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { format } from "date-fns";
+import { PostStatus } from "../../Shared/Api";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { useResolvePendingMutation } from "../../API/Dashboard/mutations/useResolvePendingMutation";
 
 const options: HTMLReactParserOptions = {
 	replace: (domNode: DOMNode) => {
@@ -51,6 +56,7 @@ export const PostPage: React.FunctionComponent = (_) => {
 
 	const { data } = useFilterPostQuery(Number(id));
 	const { mutate: deletePost } = useDeletePostMutation();
+	const { mutate: resolvePending } = useResolvePendingMutation();
 
 	const { data: userInfo } = useUserInfo();
 
@@ -72,8 +78,81 @@ export const PostPage: React.FunctionComponent = (_) => {
 		setModal(false);
 	};
 
+	const handlePending = (approved: boolean) => {
+		resolvePending(
+			{ requestContract: { approve: approved }, id: Number(id) },
+			{
+				onSuccess: () => {
+					navigate(-1);
+				},
+			},
+		);
+	};
+
 	return (
 		<Stack px={25} pt={5} gap={3}>
+			{data?.status === PostStatus.Pending &&
+				userInfo?.roles?.includes("Administrator") && (
+					<Stack
+						bgcolor={theme.palette.orange.main}
+						p={2}
+						sx={{ border: `1px solid ${theme.palette.orange.light}` }}
+						borderRadius={"8px"}
+						direction={"row"}
+						justifyContent={"space-between"}
+					>
+						<Stack direction={"row"} alignItems={"center"} gap={1}>
+							<Stack
+								color={
+									theme.palette.mode === "dark"
+										? theme.palette.common.black
+										: theme.palette.common.white
+								}
+							>
+								<WarningAmberIcon color={"inherit"} />
+							</Stack>
+							<Typography
+								variant="h3"
+								color={
+									theme.palette.mode === "dark"
+										? theme.palette.common.black
+										: theme.palette.common.white
+								}
+							>
+								{t(TranslationResources.Post.Post.pending)}
+							</Typography>
+						</Stack>
+						<Stack>
+							<Stack
+								bgcolor={theme.palette.orange.main}
+								borderRadius={8}
+								py={0.4}
+								px={1}
+								alignItems={"center"}
+								alignSelf="flex-start"
+								sx={{
+									border: `1px solid ${
+										theme.palette.mode === "dark"
+											? theme.palette.common.black
+											: theme.palette.common.white
+									}`,
+								}}
+							>
+								<Typography
+									variant="body1"
+									fontWeight={600}
+									color={
+										theme.palette.mode === "dark"
+											? theme.palette.common.black
+											: theme.palette.common.white
+									}
+								>
+									{data.status}
+								</Typography>
+							</Stack>
+						</Stack>
+					</Stack>
+				)}
 			{data?.imageUrl && (
 				<Stack position={"relative"}>
 					<Box
@@ -159,6 +238,41 @@ export const PostPage: React.FunctionComponent = (_) => {
 			<Box sx={{ fontSize: "16px" }}>
 				{data?.body && parse(data.body, options)}
 			</Box>
+
+			{data?.status === PostStatus.Pending &&
+				userInfo?.roles?.includes("Administrator") && (
+					<Stack
+						p={1}
+						border={`1px solid ${theme.palette.grey[100]}`}
+						borderRadius={"8px"}
+						gap={1}
+					>
+						<Typography fontSize="20px" fontWeight={600}>
+							{t(TranslationResources.Post.Post.adminReview)}
+						</Typography>
+						<Stack direction={"row"} gap={1}>
+							<Button
+								fullWidth
+								variant="contained"
+								color="success"
+								startIcon={<CheckIcon />}
+								onClick={() => handlePending(true)}
+							>
+								{t(TranslationResources.Post.Post.approve)}
+							</Button>
+							<Button
+								fullWidth
+								variant="contained"
+								color="error"
+								startIcon={<CloseIcon />}
+								onClick={() => handlePending(false)}
+							>
+								{t(TranslationResources.Post.Post.reject)}
+							</Button>
+						</Stack>
+					</Stack>
+				)}
+
 			<CommentComponent postId={Number(id)} />
 
 			<Modal

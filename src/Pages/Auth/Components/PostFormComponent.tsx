@@ -109,7 +109,7 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 			body: data.body,
 			imageUrl: data.imageUrl,
 			tag: data.tag,
-			status: PostStatus.Published,
+			status: PostStatus.Pending,
 		};
 
 		editPost(
