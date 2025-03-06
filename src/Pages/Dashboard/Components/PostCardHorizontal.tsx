@@ -10,6 +10,7 @@ import type { PostCardProps } from "./PostCardVertical";
 import { sanitizeHtml } from "./DashboardComponent";
 import { format } from "date-fns";
 import { PostStatus } from "../../../Shared/Api";
+import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 
 export const PENDING_LIGHT = "#a16207";
 export const PENDING_DARK = "#713f12";
@@ -29,31 +30,41 @@ export const PostCardHorizontal: React.FC<PostCardProps> = ({
 			direction={"row"}
 			onClick={() => onClick(post.id)}
 		>
-			<Box
-				sx={{
-					width: 200,
-					height: 250,
-					flexShrink: 0,
-					overflow: "hidden",
-					borderTopLeftRadius: 4,
-					borderBottomLeftRadius: 4,
-					borderTopRightRadius: 0,
-					borderBottomRightRadius: 0,
-				}}
-			>
+			{post.imageUrl ? (
 				<Box
-					component="img"
-					src={post.imageUrl ?? ""}
-					alt="default"
 					sx={{
-						width: "100%",
-						height: "100%",
-						objectFit: "cover",
-						objectPosition: "center",
-						display: "block",
+						width: 200,
+						height: 250,
+						flexShrink: 0,
+						overflow: "hidden",
+						borderTopLeftRadius: 4,
+						borderBottomLeftRadius: 4,
+						borderTopRightRadius: 0,
+						borderBottomRightRadius: 0,
 					}}
-				/>
-			</Box>
+				>
+					<Box
+						component="img"
+						src={post.imageUrl ?? ""}
+						alt="default"
+						sx={{
+							width: "100%",
+							height: "100%",
+							objectFit: "cover",
+							objectPosition: "center",
+							display: "block",
+						}}
+					/>
+				</Box>
+			) : (
+				<Stack
+					alignItems="center"
+					justifyContent="center"
+					sx={{ width: 200, height: 250 }}
+				>
+					<ImageNotSupportedIcon sx={{ width: 200, height: "100%" }} />
+				</Stack>
+			)}
 			<Stack justifyContent={"space-between"} width="100%">
 				<Stack px={2} pt={2} gap={1}>
 					<Typography

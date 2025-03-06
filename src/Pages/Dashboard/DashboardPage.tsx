@@ -24,6 +24,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { useUserInfo } from "../../API/Auth/useUserInfo";
 import SecurityIcon from "@mui/icons-material/Security";
 import { AdministrationComponent } from "./Components/AdministrationComponent";
+import { NotificationModal } from "../Notifications/NotificationModal";
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -65,6 +66,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 	const theme = useTheme();
 	const [modal, setModal] = useState(false);
 	const [dialog, setDialog] = useState(false);
+	const [notifications, setNotifications] = useState(false);
 	const [dirty, setDirty] = useState(false);
 	const { data: userData } = useUserInfo();
 
@@ -178,6 +180,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 					<TabPanel value={value} index={0}>
 						<TabsHeaderWrapper
 							title={t(Translations.Dashboard.Tabs.Home.title)}
+							setModal={setNotifications}
 						>
 							<DashboardComponent
 								setFetching={setIsFetching}
@@ -188,6 +191,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 					<TabPanel value={value} index={1}>
 						<TabsHeaderWrapper
 							title={t(Translations.Dashboard.Tabs.Home.title)}
+							setModal={setNotifications}
 						>
 							<PostsComponent setFetching={setIsFetching} setModal={setModal} />
 						</TabsHeaderWrapper>
@@ -195,6 +199,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 					<TabPanel value={value} index={2}>
 						<TabsHeaderWrapper
 							title={t(Translations.Dashboard.Tabs.Settings.title)}
+							setModal={setNotifications}
 						>
 							<SettingsComponent />
 						</TabsHeaderWrapper>
@@ -203,6 +208,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 						<TabPanel value={value} index={3}>
 							<TabsHeaderWrapper
 								title={t(Translations.Dashboard.Tabs.Administration.title)}
+								setModal={setNotifications}
 							>
 								<AdministrationComponent />
 							</TabsHeaderWrapper>
@@ -231,6 +237,19 @@ export const Dashboard: React.FunctionComponent = (_) => {
 				confirmButtonLabel={t(Translations.Post.PostForm.dialogConfirmButton)}
 				cancelButtonLabel={t(Translations.Post.PostForm.dialogCancelButton)}
 			/>
+			<Modal open={notifications} onClose={() => setNotifications(false)}>
+				<Box
+					sx={{
+						position: "absolute",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+					}}
+					width="30%"
+				>
+					<NotificationModal onClose={setNotifications} />
+				</Box>
+			</Modal>
 		</Stack>
 	);
 };

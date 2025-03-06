@@ -135,14 +135,16 @@ export const AdministrationComponent: React.FC = () => {
 				) : (
 					<Stack>
 						<CustomTabPanel value={value} index={0}>
-							{data?.map((post) => (
-								<PostCardHorizontal
-									key={post.id}
-									post={post}
-									stateTag
-									onClick={() => handleClick(post.id)}
-								/>
-							))}
+							<Stack gap={2}>
+								{data?.map((post) => (
+									<PostCardHorizontal
+										key={post.id}
+										post={post}
+										stateTag
+										onClick={() => handleClick(post.id)}
+									/>
+								))}
+							</Stack>
 						</CustomTabPanel>
 						<CustomTabPanel value={value} index={1}>
 							<Stack gap={2}>
@@ -157,14 +159,16 @@ export const AdministrationComponent: React.FC = () => {
 							</Stack>
 						</CustomTabPanel>
 						<CustomTabPanel value={value} index={2}>
-							{data?.map((post) => (
-								<PostCardHorizontal
-									key={post.id}
-									post={post}
-									stateTag
-									onClick={() => handleClick(post.id)}
-								/>
-							))}
+							<Stack gap={2}>
+								{data?.map((post) => (
+									<PostCardHorizontal
+										key={post.id}
+										post={post}
+										stateTag
+										onClick={() => handleClick(post.id)}
+									/>
+								))}
+							</Stack>
 						</CustomTabPanel>
 					</Stack>
 				)}

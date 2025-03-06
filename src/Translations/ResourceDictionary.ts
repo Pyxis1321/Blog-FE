@@ -98,4 +98,10 @@ export interface ResourceDictionary {
       cancelButton: string;
     };
   };
+  Notifications: {
+    title: string;
+    read: string;
+    view: string;
+    empty: string;
+  };
 }

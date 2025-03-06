@@ -425,6 +425,14 @@ export type ModeratePostDTO = {
 	approve: boolean;
 };
 
+export type NotificationDTO = {
+	id: number;
+	message?: string | null;
+	isRead: boolean;
+	createdAt: string;
+	postId?: number | null;
+};
+
 export type PostDTO = {
 	id: number;
 	title?: string | null;
@@ -545,6 +553,43 @@ export const getApiCommentsPostPostIdPath = (postId: number) => `/api/Comments/p
 export const getApiCommentsPostPostId = (postId: number, options?: FetchArgsOptions):
   Promise<GetApiCommentsPostPostIdFetchResponse> => {
     return apiGet(`${getApiUrl()}${getApiCommentsPostPostIdPath(postId)}`, options, {}) as Promise<GetApiCommentsPostPostIdFetchResponse>;
+}
+
+export type GetApiNotificationsFetchResponse = 
+| FetchResponse<NotificationDTO[], 200> 
+| ErrorResponse;
+
+export const getApiNotificationsPath = () => `/api/Notifications`;
+
+export const getApiNotifications = (options?: FetchArgsOptions):
+  Promise<GetApiNotificationsFetchResponse> => {
+    return apiGet(`${getApiUrl()}${getApiNotificationsPath()}`, options, {}) as Promise<GetApiNotificationsFetchResponse>;
+}
+
+export type PutApiNotificationsIdReadFetchResponse = 
+| FetchResponse<void, 200> 
+| ErrorResponse;
+
+export const putApiNotificationsIdReadPath = (id: number) => `/api/Notifications/${id}/read`;
+
+export const putApiNotificationsIdRead = (id: number, options?: FetchArgsOptions):
+  Promise<PutApiNotificationsIdReadFetchResponse> => {
+    const requestData = getApiRequestData<object>(undefined, false);
+
+    return apiPut(`${getApiUrl()}${putApiNotificationsIdReadPath(id)}`, requestData, options) as Promise<PutApiNotificationsIdReadFetchResponse>;
+}
+
+export type PutApiNotificationsReadAllFetchResponse = 
+| FetchResponse<void, 200> 
+| ErrorResponse;
+
+export const putApiNotificationsReadAllPath = () => `/api/Notifications/read-all`;
+
+export const putApiNotificationsReadAll = (options?: FetchArgsOptions):
+  Promise<PutApiNotificationsReadAllFetchResponse> => {
+    const requestData = getApiRequestData<object>(undefined, false);
+
+    return apiPut(`${getApiUrl()}${putApiNotificationsReadAllPath()}`, requestData, options) as Promise<PutApiNotificationsReadAllFetchResponse>;
 }
 
 export type GetApiPostsFetchResponse = 

@@ -100,4 +100,10 @@ export const TranslationResources: ResourceDictionary = {
       cancelButton: "Cancel",
     },
   },
+  Notifications: {
+    title: "Notifications",
+    empty: "No notifications",
+    read: "Mark all as read",
+    view: "View",
+  },
 };
