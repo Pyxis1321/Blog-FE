@@ -20,12 +20,27 @@ import { useEditPostMutation } from "../../../API/Dashboard/mutations/useEditPos
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { dashboardKeys } from "../../../API/Dashboard/keys";
+import FlatwareIcon from "@mui/icons-material/Flatware";
+import ForestIcon from "@mui/icons-material/Forest";
+import ScienceIcon from "@mui/icons-material/Science";
+import SportsVolleyballIcon from "@mui/icons-material/SportsVolleyball";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
-	FormSelect,
-	type SelectOption,
-} from "../../../Shared/Components/Form/FormSelect";
+	FormTileSelect,
+	type TileOption,
+} from "../../../Shared/Components/Form/FormTagSelect";
+import { useNavigate } from "react-router-dom";
+import { Routing } from "../../../Shared/Routing/Routing";
 
 const Translations = TranslationResources;
+
+const tagIcons = {
+	[PostTag.Cooking]: <FlatwareIcon />,
+	[PostTag.Nature]: <ForestIcon />,
+	[PostTag.Science]: <ScienceIcon />,
+	[PostTag.Sport]: <SportsVolleyballIcon />,
+	[PostTag.Other]: <MoreHorizIcon />,
+};
 
 export type Props = {
 	id?: number;
@@ -42,13 +57,15 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 }) => {
 	const { t } = useTranslation();
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 
 	const { mutate: createPost } = useUploadPostMutation();
 	const { mutate: editPost } = useEditPostMutation();
 
-	const tagOptions: SelectOption[] = Object.values(PostTag).map((tag) => ({
+	const tagOptions: TileOption[] = Object.values(PostTag).map((tag) => ({
 		value: tag,
 		label: tag,
+		icon: tagIcons[tag],
 	}));
 
 	const PostFormModelSchema = z.object({
@@ -92,7 +109,9 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 		setDialogOpen?.(false);
 		if (showError) {
 			toast.error(t(Translations.Post.PostForm.saveError));
+			return;
 		}
+		toast.success(t(Translations.Post.PostForm.saveSuccess));
 	};
 
 	const submit = (data: CreatePostDTO) => {
@@ -117,6 +136,7 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 			{
 				onSuccess: () => {
 					closeDialog();
+					navigate(Routing.Dashboard.path());
 					queryClient.invalidateQueries({
 						queryKey: dashboardKeys.filterPosts(id),
 					});
@@ -158,11 +178,11 @@ export const PostFormComponent: FC<PropsWithChildren<Props>> = ({
 						name="imageUrl"
 						label={t(Translations.Post.PostForm.image)}
 					/>
-					<FormSelect
+					<FormTileSelect
 						control={control}
 						name="tag"
+						label="Choose a Tag"
 						options={tagOptions}
-						label={t(Translations.Post.PostForm.tag)}
 					/>
 					<FormQuillInput control={control} name="body" />
 				</Stack>

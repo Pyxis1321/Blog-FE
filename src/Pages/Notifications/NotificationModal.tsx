@@ -83,8 +83,12 @@ export const NotificationModal: React.FunctionComponent<Props> = ({
 						}}
 						onClick={() => handleNotificationRead(notification)}
 					>
-						<Stack alignItems="flex-start" gap={1} p={1}>
-							<Stack direction={"row"} justifyContent={"space-between"}>
+						<Stack alignItems="flex-start" gap={1} p={1} width={"100%"}>
+							<Stack
+								direction={"row"}
+								justifyContent={"space-between"}
+								width={"100%"}
+							>
 								<Stack flexGrow={1}>
 									<Typography fontSize={14} fontWeight={500}>
 										{notification.message}

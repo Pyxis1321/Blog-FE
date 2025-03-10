@@ -4,12 +4,12 @@ import { TranslationResources } from "./EnglishTranslation";
 
 i18n.use(initReactI18next).init({
   resources: {
-    cs: {
+    en: {
       translation: TranslationResources,
     },
   },
-  lng: "cs",
-  fallbackLng: "cs",
+  lng: "en",
+  fallbackLng: "en",
   interpolation: {
     escapeValue: false,
   },

@@ -26,6 +26,7 @@ export const TranslationResources: ResourceDictionary = {
           passwordUppercase: "Password must contain an uppercase letter",
           passwordSpecialCharacter: "Password must contain a special character",
         },
+        unauthorized: "Username or password is incorrect",
       },
     },
   },
@@ -33,7 +34,7 @@ export const TranslationResources: ResourceDictionary = {
     Tabs: {
       Home: {
         tab: "Home",
-        title: "Welcome to the dashboard",
+        title: "Dashboard",
         forYou: "For you",
         trending: "Trending",
       },
@@ -75,6 +76,7 @@ export const TranslationResources: ResourceDictionary = {
       dialogConfirmButton: "Discard",
       dialogCancelButton: "Cancel",
       saveError: "Failed to save post, please try again later",
+      saveSuccess: "Post was submitted for review",
     },
     Comments: {
       title: "Comments",

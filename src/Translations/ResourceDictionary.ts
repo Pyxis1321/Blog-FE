@@ -24,6 +24,7 @@ export interface ResourceDictionary {
           passwordUppercase: string;
           passwordSpecialCharacter: string;
         };
+        unauthorized: string;
       };
     };
   };
@@ -73,6 +74,7 @@ export interface ResourceDictionary {
       dialogConfirmButton: string;
       dialogCancelButton: string;
       saveError: string;
+      saveSuccess: string;
     };
     Comments: {
       title: string;

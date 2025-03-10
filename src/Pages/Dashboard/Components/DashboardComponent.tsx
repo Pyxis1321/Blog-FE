@@ -73,35 +73,47 @@ export const DashboardComponent: React.FC<Props> = ({ setFetching }) => {
 	};
 
 	return (
-		<Stack gap={4}>
-			{personilizedSection.length > 0 && (
-				<Stack direction="row" alignItems="center" gap={1}>
-					<AutoAwesomeIcon fontSize="large" />
-					<Typography variant="h2" fontWeight={700}>
-						{t(TranslationResources.Dashboard.Tabs.Home.forYou)}
-					</Typography>
+		<>
+			{!isFetching && (
+				<Stack gap={4}>
+					{personilizedSection.length > 0 && (
+						<>
+							<Stack direction="row" alignItems="center" gap={1}>
+								<AutoAwesomeIcon fontSize="large" />
+								<Typography variant="h2" fontWeight={700}>
+									{t(TranslationResources.Dashboard.Tabs.Home.forYou)}
+								</Typography>
+							</Stack>
+							<Grid2 container spacing={2}>
+								{personilizedSection.map((post) => (
+									<Grid2 key={post.id}>
+										<PostCardVertical
+											post={post}
+											onClick={() => handleClick(post)}
+										/>
+									</Grid2>
+								))}
+							</Grid2>
+						</>
+					)}
+					<Stack direction="row" alignItems="center" gap={1}>
+						<TrendingUpIcon fontSize="large" />
+						<Typography variant="h2" fontWeight={700}>
+							{t(TranslationResources.Dashboard.Tabs.Home.trending)}
+						</Typography>
+					</Stack>
+					<Grid2 container spacing={2}>
+						{filteredPosts?.map((post) => (
+							<Grid2 key={post.id}>
+								<PostCardVertical
+									post={post}
+									onClick={() => handleClick(post)}
+								/>
+							</Grid2>
+						))}
+					</Grid2>
 				</Stack>
 			)}
-			<Grid2 container spacing={2}>
-				{personilizedSection.map((post) => (
-					<Grid2 key={post.id}>
-						<PostCardVertical post={post} onClick={() => handleClick(post)} />
-					</Grid2>
-				))}
-			</Grid2>
-			<Stack direction="row" alignItems="center" gap={1}>
-				<TrendingUpIcon fontSize="large" />
-				<Typography variant="h2" fontWeight={700}>
-					{t(TranslationResources.Dashboard.Tabs.Home.trending)}
-				</Typography>
-			</Stack>
-			<Grid2 container spacing={2}>
-				{filteredPosts?.map((post) => (
-					<Grid2 key={post.id}>
-						<PostCardVertical post={post} onClick={() => handleClick(post)} />
-					</Grid2>
-				))}
-			</Grid2>
-		</Stack>
+		</>
 	);
 };

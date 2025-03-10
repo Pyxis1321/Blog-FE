@@ -179,7 +179,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 				<Stack flexGrow={1}>
 					<TabPanel value={value} index={0}>
 						<TabsHeaderWrapper
-							title={t(Translations.Dashboard.Tabs.Home.title)}
+							title={t("Dashboard.Tabs.Home.title")}
 							setModal={setNotifications}
 						>
 							<DashboardComponent
@@ -190,7 +190,7 @@ export const Dashboard: React.FunctionComponent = (_) => {
 					</TabPanel>
 					<TabPanel value={value} index={1}>
 						<TabsHeaderWrapper
-							title={t(Translations.Dashboard.Tabs.Home.title)}
+							title={t("Dashboard.Tabs.Home.title")}
 							setModal={setNotifications}
 						>
 							<PostsComponent setFetching={setIsFetching} setModal={setModal} />

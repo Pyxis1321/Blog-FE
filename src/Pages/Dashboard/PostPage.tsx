@@ -218,6 +218,7 @@ export const PostPage: React.FunctionComponent = (_) => {
 							variant="outlined"
 							onClick={() => setModal(true)}
 							startIcon={<EditIcon />}
+							sx={{ color: theme.palette.common.black }}
 						>
 							{t(TranslationResources.Post.Post.editButton)}
 						</Button>

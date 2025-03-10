@@ -16,6 +16,7 @@ import { Logo } from "../../../Shared/SVGs/Logo";
 import { useColorScheme } from "../../../Shared/Theme/ColorSchemeProvider";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { toast } from "react-toastify";
 
 const PageResources = TranslationResources;
 
@@ -50,7 +51,14 @@ export const LoginForm: React.FunctionComponent = (_) => {
 	const { control, handleSubmit } = form;
 
 	const submit = (data: LoginFormModel) => {
-		mutate({ username: data.login, password: data.password });
+		mutate(
+			{ username: data.login, password: data.password },
+			{
+				onError: () => {
+					toast.error(t(PageResources.Auth.Form.Validation.unauthorized));
+				},
+			},
+		);
 	};
 
 	useEffect(() => {

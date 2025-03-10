@@ -70,60 +70,66 @@ export const PostsComponent: React.FC<Props> = ({ setFetching, setModal }) => {
 	};
 
 	return (
-		<Stack gap={3}>
+		<>
 			{!isFetching && (
-				<Stack justifyContent="space-between" direction="row">
-					<Stack width="40%">
-						<TextField
-							value={search}
-							placeholder={t(TranslationResources.Dashboard.placeholder)}
-							onChange={(e) => setSearch(e.target.value)}
-						/>
+				<Stack gap={3}>
+					{!isFetching && (
+						<Stack justifyContent="space-between" direction="row">
+							<Stack width="40%">
+								<TextField
+									value={search}
+									placeholder={t(TranslationResources.Dashboard.placeholder)}
+									onChange={(e) => setSearch(e.target.value)}
+								/>
+							</Stack>
+							<Button variant="contained" onClick={() => setModal(true)}>
+								{t(TranslationResources.Dashboard.addPost)}
+							</Button>
+						</Stack>
+					)}
+
+					<Stack direction="row" gap={0.6} flexWrap="wrap">
+						{allTags.map((tag) => (
+							<Box
+								component={ButtonBase}
+								key={tag}
+								onClick={() => handleTagClick(tag)}
+								bgcolor={
+									selectedTag === tag ? theme.palette.primary.main : undefined
+								}
+								p={1}
+								border={`1px solid ${theme.palette.grey[100]}`}
+								borderRadius={2}
+							>
+								<Typography fontWeight={500} fontSize={14}>
+									{tag}
+								</Typography>
+							</Box>
+						))}
 					</Stack>
-					<Button variant="contained" onClick={() => setModal(true)}>
-						{t(TranslationResources.Dashboard.addPost)}
-					</Button>
+
+					<Stack spacing={2}>
+						{data
+							?.filter((post) => {
+								const matchesSearch = post?.title
+									?.toLowerCase()
+									.includes(search.toLowerCase());
+								const matchesTag = selectedTag
+									? post.tag === selectedTag
+									: true;
+								return matchesSearch && matchesTag;
+							})
+							.map((post) => (
+								<Stack key={post.id}>
+									<PostCardHorizontal
+										post={post}
+										onClick={() => handleClick(post)}
+									/>
+								</Stack>
+							))}
+					</Stack>
 				</Stack>
 			)}
-
-			<Stack direction="row" gap={0.6} flexWrap="wrap">
-				{allTags.map((tag) => (
-					<Box
-						component={ButtonBase}
-						key={tag}
-						onClick={() => handleTagClick(tag)}
-						bgcolor={
-							selectedTag === tag ? theme.palette.primary.main : undefined
-						}
-						p={1}
-						border={`1px solid ${theme.palette.grey[100]}`}
-						borderRadius={2}
-					>
-						<Typography fontWeight={500} fontSize={14}>
-							{tag}
-						</Typography>
-					</Box>
-				))}
-			</Stack>
-
-			<Stack spacing={2}>
-				{data
-					?.filter((post) => {
-						const matchesSearch = post?.title
-							?.toLowerCase()
-							.includes(search.toLowerCase());
-						const matchesTag = selectedTag ? post.tag === selectedTag : true;
-						return matchesSearch && matchesTag;
-					})
-					.map((post) => (
-						<Stack key={post.id}>
-							<PostCardHorizontal
-								post={post}
-								onClick={() => handleClick(post)}
-							/>
-						</Stack>
-					))}
-			</Stack>
-		</Stack>
+		</>
 	);
 };
