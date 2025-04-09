@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { notificationKeys } from "./keys";
 import { processResponse } from "../Utils";
 import { getApiNotifications } from "../../Shared/Api";
+
 export function useNotificationsQuery() {
   return useQuery({
     queryKey: notificationKeys.notifications(),
