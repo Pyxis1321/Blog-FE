@@ -6,6 +6,8 @@
 	"homepage": "https://pyxis1321.github.io/Blog-FE/",
 	"scripts": {
 		"dev": "vite",
+		"predeploy": "pnpm run build",
+		"deploy": "gh-pages -d build",
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",

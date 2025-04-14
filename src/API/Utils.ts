@@ -62,17 +62,6 @@ export const isFetchResponseOfError = (obj: any): obj is FetchResponseOfError =>
   !!obj.data && typeof obj.status === "number";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export const handleResponseError = (error: any) => {
-  const skipToast =
-    error instanceof ApiCallError
-      ? error.options?.skipToastFor === true ||
-        error.options?.skipToastFor?.includes(error.data.status)
-      : false;
-
-  const errorMessage = error.message ?? "Unknown error";
-};
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function getMessageFromErrorResponse(response: any | undefined) {
   let errorMessage: string | undefined;
   let responseError = response;
@@ -216,9 +205,7 @@ export const handleCall = async <TResponse extends BaseResponse>(
     const response = await request;
     const data = processResponseStatusCode(response, options);
     return { isSuccess: true, data };
-  } catch (error) {
-    handleResponseError(error);
-  }
+  } catch (error) {}
   return { isSuccess: false };
 };
 
