@@ -38,7 +38,4 @@ export const router = createBrowserRouter(
 			),
 		},
 	],
-	{
-		basename: "/Blog-FE",
-	},
 );
